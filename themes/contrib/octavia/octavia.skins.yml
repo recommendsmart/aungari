@@ -1,3 +1,7 @@
+centred:
+  name: 'Centred'
+  description: 'Centred is a minimalist skin with a centred title and menu below.'
+  screenshot: 'skins/centred/screenshot.png'
 chocolate:
   name: 'Chocolate'
   description: 'An earth toned brown and green skin with a slender headline font.'

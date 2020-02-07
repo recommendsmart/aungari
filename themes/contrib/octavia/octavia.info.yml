@@ -45,7 +45,7 @@ component-libraries:
       - src/skins
 
 
-# Information added by Drupal.org packaging script on 2019-08-23
-version: '8.x-1.0-beta4'
+# Information added by Drupal.org packaging script on 2019-10-08
+version: '8.x-1.0-beta5'
 project: 'octavia'
-datestamp: 1566518587
+datestamp: 1570576086

@@ -18,6 +18,10 @@
   max-height: 4rem;
 }
 
+#block-octavia-branding {
+  flex-shrink: initial;
+}
+
 // Provide a bit more distance between checkboxes and labels.
 // See https://gitlab.com/drutopia/octavia/issues/60
 // TODO fix for RTL languages

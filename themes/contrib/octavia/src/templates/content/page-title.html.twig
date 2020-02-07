@@ -1,6 +1,3 @@
+{% extends "@stable/content/page-title.html.twig" %}
 {% set title_attributes = title_attributes.addClass(['is-size-1', 'is-size-2-touch', 'is-size-3-mobile']) %}
-{{ title_prefix }}
-{% if title['#markup'] is not empty %}
-  <h1{{ title_attributes }}>{{ title }}</h1>
-{% endif %}
-{{ title_suffix }}
+

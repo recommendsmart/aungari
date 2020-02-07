@@ -28,7 +28,7 @@ regions:
 libraries:
   - bulma/global
 
-# Information added by Drupal.org packaging script on 2019-08-20
-version: '8.x-1.0-beta3'
+# Information added by Drupal.org packaging script on 2020-02-05
+version: '8.x-1.0-beta4'
 project: 'bulma'
-datestamp: 1566343987
+datestamp: 1580867355

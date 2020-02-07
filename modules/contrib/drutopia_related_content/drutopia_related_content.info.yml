@@ -1,7 +1,7 @@
 name: 'Drutopia Related Content'
-description: 'Provides related content on node pages generated via similar terms.'
+description: "Shows content (articles, actions, etc.) related to the current page's content based on the taxonomy terms held in common."
 type: module
-# core: 8.x
+core: 8.x
 dependencies:
   - block
   - block_visibility_groups
@@ -12,8 +12,7 @@ dependencies:
   - views
 package: Drutopia
 
-# Information added by Drupal.org packaging script on 2019-05-30
-version: '8.x-1.0-beta2'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2019-09-22
+version: '8.x-1.0-beta3'
 project: 'drutopia_related_content'
-datestamp: 1559239097
+datestamp: 1569167891

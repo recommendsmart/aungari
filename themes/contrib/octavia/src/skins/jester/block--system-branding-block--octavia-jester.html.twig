@@ -1,4 +1,4 @@
-{% extends "@bulma/block/block--system-branding-block.html.twig" %}
+{% extends "@octavia/block/block--system-branding-block.html.twig" %}
 {% block content %}
   {% if site_logo %}
     <figure class="image is-pulled-left">
@@ -8,7 +8,7 @@
     </figure>
   {% endif %}
   {% if site_name %}
-    <a class="title is-4 has-text-white" href="{{ path('<front>') }}" title="{{ 'Home'|t }}" rel="home">{{ site_name }}</a>
+    <a class="title is-size-3-desktop is-size-4-touch has-text-white" href="{{ path('<front>') }}" title="{{ 'Home'|t }}" rel="home">{{ site_name }}</a>
   {% endif %}
 {% endblock content %}
 
