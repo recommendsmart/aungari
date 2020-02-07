@@ -19,11 +19,6 @@ class MediaContextualLinksTest extends MediaFunctionalTestBase {
   ];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests contextual links.
    */
   public function testMediaContextualLinks() {

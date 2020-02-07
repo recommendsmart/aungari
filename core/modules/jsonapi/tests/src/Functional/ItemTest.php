@@ -23,11 +23,6 @@ class ItemTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected static $entityTypeId = 'aggregator_item';
 
   /**

@@ -364,7 +364,7 @@ function _batch_process() {
       // If possible, estimate remaining processing time.
       '@estimate'   => ($current > 0) ? \Drupal::service('date.formatter')->formatInterval(($elapsed * ($total - $current) / $current) / 1000) : '-',
     ];
-    $message    = strtr($progress_message, $values);
+    $message = strtr($progress_message, $values);
 
     return [$percentage, $message, $task_message];
   }
@@ -418,10 +418,8 @@ function &_batch_current_set() {
  */
 function _batch_next_set() {
   $batch = &batch_get();
-  $set_indexes = array_keys($batch['sets']);
-  $current_set_index_key = array_search($batch['current_set'], $set_indexes);
-  if (isset($set_indexes[$current_set_index_key + 1])) {
-    $batch['current_set'] = $set_indexes[$current_set_index_key + 1];
+  if (isset($batch['sets'][$batch['current_set'] + 1])) {
+    $batch['current_set']++;
     $current_set = &_batch_current_set();
     if (isset($current_set['form_submit']) && ($callback = $current_set['form_submit']) && is_callable($callback)) {
       // We use our stored copies of $form and $form_state to account for

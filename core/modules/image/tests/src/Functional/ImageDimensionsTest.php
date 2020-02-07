@@ -26,11 +26,6 @@ class ImageDimensionsTest extends BrowserTestBase {
    */
   public static $modules = ['image', 'image_module_test'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
   protected $profile = 'testing';
 
   /**

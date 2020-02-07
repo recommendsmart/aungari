@@ -23,11 +23,6 @@ class LayoutBuilderQuickEditTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 
@@ -60,9 +55,9 @@ class LayoutBuilderQuickEditTest extends BrowserTestBase {
 
     // Place a field block for a user entity field.
     $this->drupalGet('node/1/layout');
-    $page->clickLink('Add block');
+    $page->clickLink('Add Block');
     $page->clickLink('Name');
-    $page->pressButton('Add block');
+    $page->pressButton('Add Block');
     $page->pressButton('Save layout');
 
     $this->drupalGet('node/1');

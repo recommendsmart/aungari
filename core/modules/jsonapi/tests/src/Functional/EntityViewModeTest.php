@@ -22,11 +22,6 @@ class EntityViewModeTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected static $entityTypeId = 'entity_view_mode';
 
   /**

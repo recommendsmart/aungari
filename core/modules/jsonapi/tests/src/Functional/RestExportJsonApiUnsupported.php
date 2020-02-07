@@ -9,6 +9,7 @@ use Drupal\views\Tests\ViewTestData;
  * Ensures that the 'api_json' format is not supported by the REST module.
  *
  * @group jsonapi
+ * @group legacy
  *
  * @internal
  */
@@ -23,11 +24,6 @@ class RestExportJsonApiUnsupported extends ViewTestBase {
    * {@inheritdoc}
    */
   public static $modules = ['jsonapi', 'rest_test_views', 'views_ui'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}

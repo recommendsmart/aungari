@@ -26,11 +26,6 @@ class UpdateScriptTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected $dumpHeaders = TRUE;
 
   /**
@@ -213,7 +208,7 @@ class UpdateScriptTest extends BrowserTestBase {
    */
   public function testSuccessfulUpdateFunctionality() {
     $initial_maintenance_mode = $this->container->get('state')->get('system.maintenance_mode');
-    $this->assertNull($initial_maintenance_mode, 'Site is not in maintenance mode.');
+    $this->assertFalse($initial_maintenance_mode, 'Site is not in maintenance mode.');
     $this->runUpdates($initial_maintenance_mode);
     $final_maintenance_mode = $this->container->get('state')->get('system.maintenance_mode');
     $this->assertEqual($final_maintenance_mode, $initial_maintenance_mode, 'Maintenance mode should not have changed after database updates.');

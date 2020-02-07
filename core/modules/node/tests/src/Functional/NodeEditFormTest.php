@@ -13,11 +13,6 @@ use Drupal\user\Entity\User;
 class NodeEditFormTest extends NodeTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * A normal logged in user.
    *
    * @var \Drupal\user\UserInterface
@@ -52,7 +47,7 @@ class NodeEditFormTest extends NodeTestBase {
     $this->adminUser = $this->drupalCreateUser(['bypass node access', 'administer nodes']);
     $this->drupalPlaceBlock('local_tasks_block');
 
-    $this->nodeStorage = $this->container->get('entity_type.manager')->getStorage('node');
+    $this->nodeStorage = $this->container->get('entity.manager')->getStorage('node');
   }
 
   /**
@@ -71,7 +66,7 @@ class NodeEditFormTest extends NodeTestBase {
 
     // Check that the node exists in the database.
     $node = $this->drupalGetNodeByTitle($edit[$title_key]);
-    $this->assertNotEmpty($node, 'Node found in database.');
+    $this->assertTrue($node, 'Node found in database.');
 
     // Check that "edit" link points to correct page.
     $this->clickLink(t('Edit'));
@@ -172,7 +167,7 @@ class NodeEditFormTest extends NodeTestBase {
 
     // Now test with the Autocomplete (Tags) field widget.
     /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display */
-    $form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.page.default');
+    $form_display = \Drupal::entityManager()->getStorage('entity_form_display')->load('node.page.default');
     $widget = $form_display->getComponent('uid');
     $widget['type'] = 'entity_reference_autocomplete_tags';
     $widget['settings'] = [

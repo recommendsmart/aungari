@@ -12,11 +12,6 @@ use Drupal\Core\Url;
 class DeleteFeedItemTest extends AggregatorTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests running "delete items" from 'admin/config/services/aggregator' page.
    */
   public function testDeleteFeedItem() {

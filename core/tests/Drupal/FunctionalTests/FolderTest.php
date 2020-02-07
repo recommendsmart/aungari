@@ -20,13 +20,8 @@ class FolderTest extends BrowserTestBase {
    */
   public static $modules = ['image'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
   public function testFolderSetup() {
-    $directory = 'public://styles';
+    $directory = file_default_scheme() . '://styles';
     $this->assertTrue(\Drupal::service('file_system')->prepareDirectory($directory, FALSE), 'Directory created.');
   }
 

@@ -20,11 +20,6 @@ class RedirectTest extends BrowserTestBase {
   public static $modules = ['form_test', 'block'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests form redirection.
    */
   public function testRedirect() {

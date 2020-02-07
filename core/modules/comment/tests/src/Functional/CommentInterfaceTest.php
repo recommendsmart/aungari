@@ -19,11 +19,6 @@ use Drupal\filter\Entity\FilterFormat;
 class CommentInterfaceTest extends CommentTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
-  /**
    * Set up comments to have subject and preview disabled.
    */
   protected function setUp() {
@@ -178,21 +173,21 @@ class CommentInterfaceTest extends CommentTestBase {
 
     // Attempt to post to node with comments disabled.
     $this->node = $this->drupalCreateNode(['type' => 'article', 'promote' => 1, 'comment' => [['status' => CommentItemInterface::HIDDEN]]]);
-    $this->assertNotNull($this->node, 'Article node created.');
+    $this->assertTrue($this->node, 'Article node created.');
     $this->drupalGet('comment/reply/node/' . $this->node->id() . '/comment');
     $this->assertResponse(403);
     $this->assertNoField('edit-comment', 'Comment body field found.');
 
     // Attempt to post to node with read-only comments.
     $this->node = $this->drupalCreateNode(['type' => 'article', 'promote' => 1, 'comment' => [['status' => CommentItemInterface::CLOSED]]]);
-    $this->assertNotNull($this->node, 'Article node created.');
+    $this->assertTrue($this->node, 'Article node created.');
     $this->drupalGet('comment/reply/node/' . $this->node->id() . '/comment');
     $this->assertResponse(403);
     $this->assertNoField('edit-comment', 'Comment body field found.');
 
     // Attempt to post to node with comments enabled (check field names etc).
     $this->node = $this->drupalCreateNode(['type' => 'article', 'promote' => 1, 'comment' => [['status' => CommentItemInterface::OPEN]]]);
-    $this->assertNotNull($this->node, 'Article node created.');
+    $this->assertTrue($this->node, 'Article node created.');
     $this->drupalGet('comment/reply/node/' . $this->node->id() . '/comment');
     $this->assertNoText('This discussion is closed', 'Posting to node with comments enabled');
     $this->assertField('edit-comment-body-0-value', 'Comment body field found.');

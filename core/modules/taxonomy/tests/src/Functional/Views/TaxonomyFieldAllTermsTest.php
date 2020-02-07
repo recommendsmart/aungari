@@ -20,11 +20,6 @@ class TaxonomyFieldAllTermsTest extends TaxonomyTestBase {
   public static $testViews = ['taxonomy_all_terms_test'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests the "all terms" field handler.
    */
   public function testViewsHandlerAllTermsField() {

@@ -23,14 +23,7 @@ class UpdatesWith7xTest extends BrowserTestBase {
   public static $modules = ['update_test_with_7x'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * The URL for the update page.
-   *
-   * @var string
    */
   private $updateUrl;
 

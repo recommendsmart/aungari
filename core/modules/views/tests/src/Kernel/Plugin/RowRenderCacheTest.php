@@ -195,7 +195,7 @@ class RowRenderCacheTest extends ViewsKernelTestBase {
           ],
         ];
         $element = $render_cache->get($cache);
-        $this->assertNotEmpty($element);
+        $this->assertTrue($element);
       }
 
       $index++;

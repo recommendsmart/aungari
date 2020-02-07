@@ -25,18 +25,13 @@ class UserTranslationUITest extends ContentTranslationUITestBase {
    */
   public static $modules = ['language', 'content_translation', 'user', 'views'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
   protected function setUp() {
     $this->entityTypeId = 'user';
     $this->testLanguageSelector = FALSE;
     $this->name = $this->randomMachineName();
     parent::setUp();
 
-    \Drupal::entityTypeManager()->getStorage('user')->resetCache();
+    \Drupal::entityManager()->getStorage('user')->resetCache();
   }
 
   /**

@@ -19,11 +19,6 @@ class SearchPageTextTest extends BrowserTestBase {
   protected static $modules = ['block', 'node', 'search'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * A user with permission to use advanced search.
    *
    * @var \Drupal\user\UserInterface

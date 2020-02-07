@@ -11,12 +11,6 @@ use Drupal\user\RoleInterface;
  * @group node
  */
 class NodeAdminTest extends NodeTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
   /**
    * A user with permission to bypass access content.
    *

@@ -17,11 +17,6 @@ class CachedDataUITest extends UITestBase {
   public static $testViews = ['test_view'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests the shared tempstore views data in the UI.
    */
   public function testCacheData() {

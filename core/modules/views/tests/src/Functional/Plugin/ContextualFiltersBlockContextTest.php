@@ -24,11 +24,6 @@ class ContextualFiltersBlockContextTest extends ViewTestBase {
   public static $modules = ['block', 'block_test_views', 'views_ui', 'node'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
-  /**
    * Views used by this test.
    *
    * @var array

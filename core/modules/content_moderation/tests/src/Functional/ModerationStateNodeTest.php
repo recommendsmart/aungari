@@ -15,11 +15,6 @@ class ModerationStateNodeTest extends ModerationStateTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
     $this->drupalLogin($this->adminUser);

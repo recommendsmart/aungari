@@ -16,11 +16,6 @@ class FileTransferAuthorizeFormTest extends UpdateTestBase {
    */
   public static $modules = ['update', 'update_test'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
   protected function setUp() {
     parent::setUp();
     $admin_user = $this->drupalCreateUser(['administer modules', 'administer software updates', 'administer site configuration']);

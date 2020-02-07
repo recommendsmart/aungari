@@ -42,11 +42,6 @@ class DateFormatTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUpAuthorization($method) {
     $this->grantPermissionsToTestedRole(['administer site configuration']);
   }

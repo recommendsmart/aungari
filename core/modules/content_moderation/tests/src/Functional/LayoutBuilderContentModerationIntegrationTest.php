@@ -29,11 +29,6 @@ class LayoutBuilderContentModerationIntegrationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 
@@ -99,9 +94,9 @@ class LayoutBuilderContentModerationIntegrationTest extends BrowserTestBase {
     $assert_session->checkboxChecked('revision');
     $assert_session->fieldDisabled('revision');
 
-    $page->clickLink('Add block');
+    $page->clickLink('Add Block');
     $page->clickLink('Powered by Drupal');
-    $page->pressButton('Add block');
+    $page->pressButton('Add Block');
     // Save the node as a draft. Revision count: 3.
     $page->fillField('moderation_state[0][state]', 'draft');
     $page->pressButton('Save layout');

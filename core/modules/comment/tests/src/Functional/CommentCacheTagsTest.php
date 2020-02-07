@@ -28,11 +28,6 @@ class CommentCacheTagsTest extends EntityWithUriCacheTagsTestBase {
   public static $modules = ['comment'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * @var \Drupal\entity_test\Entity\EntityTest
    */
   protected $entityTestCamelid;

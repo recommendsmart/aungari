@@ -27,11 +27,6 @@ class TaxonomyIndexTidUiTest extends UITestBase {
   public static $testViews = ['test_filter_taxonomy_index_tid', 'test_taxonomy_term_name'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
-  /**
    * Modules to enable.
    *
    * @var array
@@ -71,7 +66,7 @@ class TaxonomyIndexTidUiTest extends UITestBase {
         $this->terms[$i][$j] = $term = Term::create([
           'vid' => 'tags',
           'name' => "Term $i.$j",
-          'parent' => isset($this->terms[$i][0]) ? $this->terms[$i][0]->id() : 0,
+          'parent' => isset($terms[$i][0]) ? $terms[$i][0]->id() : 0,
         ]);
         $term->save();
       }

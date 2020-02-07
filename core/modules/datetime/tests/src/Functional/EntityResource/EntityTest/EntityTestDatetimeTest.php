@@ -28,11 +28,6 @@ class EntityTestDatetimeTest extends EntityTestResourceTestBase {
   protected static $dateString = '2017-03-01T20:02:00';
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Datetime test field name.
    *
    * @var string

@@ -1,0 +1,40 @@
+name: 'Drutopia Blog'
+description: 'Provide Blog content type and related configuration. Use <em>blog</em> for personal or journal-like posts.'
+type: module
+# core: 8.x
+dependencies:
+  - block
+  - block_visibility_groups
+  - comment
+  - config_actions
+  - drutopia_comment
+  - drutopia_core
+  - drutopia_people
+  - drutopia_seo
+  - drutopia_site
+  - ds
+  - entity_reference_revisions
+  - facets
+  - field
+  - field_group
+  - focal_point
+  - image
+  - menu_ui
+  - metatag
+  - node
+  - paragraphs
+  - path
+  - pathauto
+  - responsive_image
+  - search_api
+  - system
+  - text
+  - user
+  - views
+package: Drutopia
+
+# Information added by Drupal.org packaging script on 2019-05-30
+version: '8.x-1.0-beta3'
+core: '8.x'
+project: 'drutopia_blog'
+datestamp: 1559237891

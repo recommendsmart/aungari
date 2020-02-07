@@ -1,0 +1,6 @@
+GetTotalQuantityOfProductFromCart:
+  version: 1.0
+  js:
+    src/core/Nodes/Actions/GetTotalQuantityOfProductFromCart/GetTotalQuantityOfProductFromCart.js: {}
+  dependencies:
+    - if_then_else/external

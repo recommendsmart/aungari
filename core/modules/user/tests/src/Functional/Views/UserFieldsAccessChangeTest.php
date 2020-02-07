@@ -17,11 +17,6 @@ class UserFieldsAccessChangeTest extends UserTestBase {
   public static $modules = ['user_access_test'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
-  /**
    * Views used by this test.
    *
    * @var array

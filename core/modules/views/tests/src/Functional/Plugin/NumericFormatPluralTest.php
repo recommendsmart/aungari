@@ -22,11 +22,6 @@ class NumericFormatPluralTest extends ViewTestBase {
   public static $modules = ['views_ui', 'file', 'language', 'locale'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Views used by this test.
    *
    * @var array

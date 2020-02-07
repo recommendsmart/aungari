@@ -12,11 +12,6 @@ use Drupal\file\Entity\File;
 class FileAudioFormatterTest extends FileMediaFormatterTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * @covers ::viewElements
    *
    * @dataProvider dataProvider

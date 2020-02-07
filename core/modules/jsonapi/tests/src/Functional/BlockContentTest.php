@@ -42,11 +42,6 @@ class BlockContentTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected static $patchProtectedFieldNames = [
     'changed' => NULL,
   ];

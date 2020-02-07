@@ -16,9 +16,4 @@ class ContentModerationAdminPathEntityConverterLanguageTest extends AdminPathEnt
    */
   public static $modules = ['language', 'language_test', 'content_moderation'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
 }

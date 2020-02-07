@@ -27,11 +27,6 @@ class SaveUploadFormTest extends FileManagedTestBase {
   public static $modules = ['dblog'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
-
-  /**
    * An image file path for uploading.
    *
    * @var \Drupal\file\FileInterface
@@ -40,15 +35,11 @@ class SaveUploadFormTest extends FileManagedTestBase {
 
   /**
    * A PHP file path for upload security testing.
-   *
-   * @var string
    */
   protected $phpfile;
 
   /**
    * The largest file id when the test starts.
-   *
-   * @var int
    */
   protected $maxFidBefore;
 
@@ -82,7 +73,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     $file_system = \Drupal::service('file_system');
     // Upload with replace to guarantee there's something there.
     $edit = [
-      'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
+      'file_test_replace' => FILE_EXISTS_REPLACE,
       'files[file_test_upload][]' => $file_system->realpath($this->image->getFileUri()),
     ];
     $this->drupalPostForm('file-test/save_upload_from_form_test', $edit, t('Submit'));
@@ -102,7 +93,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     $max_fid_after = (int) \Drupal::entityQueryAggregate('file')->aggregate('fid', 'max')->execute()[0]['fid_max'];
     $this->assertTrue($max_fid_after > $this->maxFidBefore, 'A new file was created.');
     $file1 = File::load($max_fid_after);
-    $this->assertInstanceOf(File::class, $file1, 'Loaded the file.');
+    $this->assertTrue($file1, 'Loaded the file.');
     // MIME type of the uploaded image may be either image/jpeg or image/png.
     $this->assertEqual(substr($file1->getMimeType(), 0, 5), 'image', 'A MIME type was set.');
 
@@ -123,7 +114,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     $this->assertFileHooksCalled(['validate', 'insert']);
 
     $file2 = File::load($max_fid_after);
-    $this->assertInstanceOf(File::class, $file2, 'Loaded the file');
+    $this->assertTrue($file2, 'Loaded the file');
     // MIME type of the uploaded image may be either image/jpeg or image/png.
     $this->assertEqual(substr($file2->getMimeType(), 0, 5), 'image', 'A MIME type was set.');
 
@@ -158,7 +149,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     // _file_save_upload_from_form() to only allow ".foo".
     $extensions = 'foo';
     $edit = [
-      'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
+      'file_test_replace' => FILE_EXISTS_REPLACE,
       'files[file_test_upload][]' => $file_system->realpath($this->image->getFileUri()),
       'extensions' => $extensions,
     ];
@@ -178,7 +169,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     $extensions = 'foo ' . $this->imageExtension;
     // Now tell _file_save_upload_from_form() to allow the extension of our test image.
     $edit = [
-      'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
+      'file_test_replace' => FILE_EXISTS_REPLACE,
       'files[file_test_upload][]' => $file_system->realpath($this->image->getFileUri()),
       'extensions' => $extensions,
     ];
@@ -196,7 +187,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
 
     // Now tell _file_save_upload_from_form() to allow any extension.
     $edit = [
-      'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
+      'file_test_replace' => FILE_EXISTS_REPLACE,
       'files[file_test_upload][]' => $file_system->realpath($this->image->getFileUri()),
       'allow_all_extensions' => TRUE,
     ];
@@ -219,7 +210,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     // Allow the .php extension and make sure it gets renamed to .txt for
     // safety. Also check to make sure its MIME type was changed.
     $edit = [
-      'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
+      'file_test_replace' => FILE_EXISTS_REPLACE,
       'files[file_test_upload][]' => $file_system->realpath($this->phpfile->uri),
       'is_image_file' => FALSE,
       'extensions' => 'php',
@@ -330,7 +321,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
     $edit = [
-      'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
+      'file_test_replace' => FILE_EXISTS_REPLACE,
       'files[file_test_upload][]' => $file_system->realpath($this->image->getFileUri()),
     ];
     $this->drupalPostForm('file-test/save_upload_from_form_test', $edit, t('Submit'));
@@ -348,7 +339,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
     $edit = [
-      'file_test_replace' => FileSystemInterface::EXISTS_ERROR,
+      'file_test_replace' => FILE_EXISTS_ERROR,
       'files[file_test_upload][]' => $file_system->realpath($this->image->getFileUri()),
     ];
     $this->drupalPostForm('file-test/save_upload_from_form_test', $edit, t('Submit'));

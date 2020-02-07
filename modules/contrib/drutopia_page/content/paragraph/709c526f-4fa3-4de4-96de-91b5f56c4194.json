@@ -1,0 +1,78 @@
+{
+    "_links": {
+        "self": {
+            "href": ""
+        },
+        "type": {
+            "href": "http:\/\/drupal.org\/rest\/type\/paragraph\/text"
+        }
+    },
+    "uuid": [
+        {
+            "value": "709c526f-4fa3-4de4-96de-91b5f56c4194"
+        }
+    ],
+    "langcode": [
+        {
+            "value": "en",
+            "lang": "en"
+        }
+    ],
+    "type": [
+        {
+            "target_id": "text"
+        }
+    ],
+    "status": [
+        {
+            "value": true,
+            "lang": "en"
+        }
+    ],
+    "created": [
+        {
+            "value": "2019-05-23T21:09:33+00:00",
+            "lang": "en",
+            "format": "Y-m-d\\TH:i:sP"
+        }
+    ],
+    "parent_id": [
+        {
+            "value": "34"
+        }
+    ],
+    "parent_type": [
+        {
+            "value": "node"
+        }
+    ],
+    "parent_field_name": [
+        {
+            "value": "field_body_paragraph"
+        }
+    ],
+    "behavior_settings": [
+        {
+            "value": []
+        }
+    ],
+    "default_langcode": [
+        {
+            "value": true,
+            "lang": "en"
+        }
+    ],
+    "revision_translation_affected": [
+        {
+            "value": true,
+            "lang": "en"
+        }
+    ],
+    "field_text": [
+        {
+            "value": "<p>Every website should have a well developed and clearly worded privacy policy.&nbsp; This policy should also be easy for web visitors to find. Replace the text on this page (and its summary) with your existing privacy policy.<\/p>\r\n\r\n<p>If you don't already have one, use some of these suggested resources to start your work of crafting one. Depending on your jurisdiction and the location of your website visitors, specific requirements will apply. Viewing the privacy policies of groups you admire is another good place to start.<\/p>\r\n\r\n<p><a href=\"https:\/\/gdpr.eu\/privacy-notice\/\">Writing a GDPR-compliant privacy notice<\/a><\/p>\r\n\r\n<p><a href=\"https:\/\/www.wikihow.com\/Create-a-Website-Privacy-Policy\">How to Create a Website Privacy Policy<\/a><\/p>\r\n\r\n<p>You can temporarily unpublish this page until you have your policy in place, although that may risk your noncompliance with applicable legislation.<\/p>\r\n",
+            "format": "basic_html",
+            "processed": "<p>Every website should have a well developed and clearly worded privacy policy.\u00a0 This policy should also be easy for web visitors to find. Replace the text on this page (and its summary) with your existing privacy policy.<\/p>\n\n<p>If you don't already have one, use some of these suggested resources to start your work of crafting one. Depending on your jurisdiction and the location of your website visitors, specific requirements will apply. Viewing the privacy policies of groups you admire is another good place to start.<\/p>\n\n<p><a href=\"https:\/\/gdpr.eu\/privacy-notice\/\">Writing a GDPR-compliant privacy notice<\/a><\/p>\n\n<p><a href=\"https:\/\/www.wikihow.com\/Create-a-Website-Privacy-Policy\">How to Create a Website Privacy Policy<\/a><\/p>\n\n<p>You can temporarily unpublish this page until you have your policy in place, although that may risk your noncompliance with applicable legislation.<\/p>"
+        }
+    ]
+}

@@ -30,11 +30,6 @@ class OEmbedFormatterTest extends MediaFunctionalTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
     $this->lockHttpClientToFixtures();
@@ -63,35 +58,20 @@ class OEmbedFormatterTest extends MediaFunctionalTestBase {
         [
           'iframe' => [
             'src' => '/media/oembed?url=https%3A//vimeo.com/7073899',
-            'width' => '480',
-            'height' => '360',
-            'title' => 'Drupal Rap Video - Schipulcon09',
+            'width' => 480,
+            'height' => 360,
           ],
         ],
       ],
       'Vimeo video, resized' => [
         'https://vimeo.com/7073899',
         'video_vimeo.json?maxwidth=100&maxheight=100',
-        ['max_width' => '100', 'max_height' => '100'],
+        ['max_width' => 100, 'max_height' => 100],
         [
           'iframe' => [
             'src' => '/media/oembed?url=https%3A//vimeo.com/7073899',
-            'width' => '100',
-            'height' => '100',
-            'title' => 'Drupal Rap Video - Schipulcon09',
-          ],
-        ],
-      ],
-      'Vimeo video, no title' => [
-        'https://vimeo.com/7073899',
-        'video_vimeo-no-title.json',
-        [],
-        [
-          'iframe' => [
-            'src' => '/media/oembed?url=https%3A//vimeo.com/7073899',
-            'width' => '480',
-            'height' => '360',
-            'title' => NULL,
+            'width' => 100,
+            'height' => 100,
           ],
         ],
       ],
@@ -102,8 +82,8 @@ class OEmbedFormatterTest extends MediaFunctionalTestBase {
         [
           'iframe' => [
             'src' => '/media/oembed?url=https%3A//twitter.com/drupaldevdays/status/935643039741202432',
-            'width' => '550',
-            'height' => '360',
+            'width' => 550,
+            'height' => 360,
           ],
         ],
       ],
@@ -114,8 +94,8 @@ class OEmbedFormatterTest extends MediaFunctionalTestBase {
         [
           'img' => [
             'src' => '/core/misc/druplicon.png',
-            'width' => '88',
-            'height' => '100',
+            'width' => 88,
+            'height' => 100,
           ],
         ],
       ],
@@ -191,14 +171,8 @@ class OEmbedFormatterTest extends MediaFunctionalTestBase {
     $assert = $this->assertSession();
     $assert->statusCodeEquals(200);
     foreach ($selectors as $selector => $attributes) {
-      $element = $assert->elementExists('css', $selector);
       foreach ($attributes as $attribute => $value) {
-        if (isset($value)) {
-          $this->assertContains($value, $element->getAttribute($attribute));
-        }
-        else {
-          $this->assertFalse($element->hasAttribute($attribute));
-        }
+        $assert->elementAttributeContains('css', $selector, $attribute, $value);
       }
     }
   }

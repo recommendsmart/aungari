@@ -28,11 +28,6 @@ class LanguageNegotiationContentEntityTest extends BrowserTestBase {
   public static $modules = ['language', 'language_test', 'entity_test', 'system'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * The entity being used for testing.
    *
    * @var \Drupal\Core\Entity\ContentEntityInterface

@@ -20,11 +20,6 @@ class ViewTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected static $entityTypeId = 'view';
 
   /**
@@ -84,6 +79,7 @@ class ViewTest extends ResourceTestBase {
         'attributes' => [
           'base_field' => 'nid',
           'base_table' => 'node',
+          'core' => '8.x',
           'dependencies' => [],
           'description' => '',
           'display' => [

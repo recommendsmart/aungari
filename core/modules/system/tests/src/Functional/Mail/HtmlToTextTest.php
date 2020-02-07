@@ -15,11 +15,6 @@ use Drupal\Tests\BrowserTestBase;
 class HtmlToTextTest extends BrowserTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Converts a string to its PHP source equivalent for display in test messages.
    *
    * @param $text
@@ -242,7 +237,10 @@ class HtmlToTextTest extends BrowserTestBase {
 EOT;
     $input = str_replace(["\r", "\n"], '', $input);
     $output = MailFormatHelper::htmlToText($input);
-    $pass = $this->assertNotRegExp('/\][^\n]*\[/s', $output, 'Block-level HTML tags should force newlines');
+    $pass = $this->assertFalse(
+      preg_match('/\][^\n]*\[/s', $output),
+      'Block-level HTML tags should force newlines'
+    );
     if (!$pass) {
       $this->verbose($this->stringToHtml($output));
     }

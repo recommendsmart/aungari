@@ -19,11 +19,6 @@ class NodeAttributesTest extends NodeTestBase {
    */
   public static $modules = ['rdf'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
   protected function setUp() {
     parent::setUp();
 

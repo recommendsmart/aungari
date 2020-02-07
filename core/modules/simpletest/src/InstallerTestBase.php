@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Base class for testing the interactive installer.
  *
- * @deprecated in drupal:8.6.0 and is removed from drupal:9.0.0.
+ * @deprecated in Drupal 8.6.0 and will be removed before Drupal 9.0.0.
  * Use \Drupal\FunctionalTests\Installer\InstallerTestBase. See
  * https://www.drupal.org/node/2988752
  */
@@ -148,7 +148,9 @@ abstract class InstallerTestBase extends WebTestBase {
       $request = Request::createFromGlobals();
       $class_loader = require $this->container->get('app.root') . '/autoload.php';
       Settings::initialize($this->container->get('app.root'), DrupalKernel::findSitePath($request), $class_loader);
-      $this->configDirectories['sync'] = Settings::get('config_sync_directory');
+      foreach ($GLOBALS['config_directories'] as $type => $path) {
+        $this->configDirectories[$type] = $path;
+      }
 
       // After writing settings.php, the installer removes write permissions
       // from the site directory. To allow drupal_generate_test_ua() to write
@@ -158,13 +160,8 @@ abstract class InstallerTestBase extends WebTestBase {
       // Not using File API; a potential error must trigger a PHP warning.
       chmod($this->container->get('app.root') . '/' . $this->siteDirectory, 0777);
       $this->kernel = DrupalKernel::createFromRequest($request, $class_loader, 'prod', FALSE);
-      $this->kernel->boot();
-      $this->kernel->preHandle($request);
+      $this->kernel->prepareLegacyRequest($request);
       $this->container = $this->kernel->getContainer();
-      // Ensure our request includes the session if appropriate.
-      if (PHP_SAPI !== 'cli') {
-        $request->setSession($this->container->get('session'));
-      }
 
       // Manually configure the test mail collector implementation to prevent
       // tests from sending out emails and collect them in state instead.

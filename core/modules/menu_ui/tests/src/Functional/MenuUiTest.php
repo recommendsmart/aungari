@@ -40,11 +40,6 @@ class MenuUiTest extends BrowserTestBase {
   ];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * A user with administration rights.
    *
    * @var \Drupal\user\UserInterface
@@ -259,8 +254,8 @@ class MenuUiTest extends BrowserTestBase {
     $this->assertNull(Menu::load($menu_name), 'Custom menu was deleted');
     // Test if all menu links associated with the menu were removed from
     // database.
-    $result = \Drupal::entityTypeManager()->getStorage('menu_link_content')->loadByProperties(['menu_name' => $menu_name]);
-    $this->assertEmpty($result, 'All menu links associated with the custom menu were deleted.');
+    $result = entity_load_multiple_by_properties('menu_link_content', ['menu_name' => $menu_name]);
+    $this->assertFalse($result, 'All menu links associated with the custom menu were deleted.');
 
     // Make sure there's no delete button on system menus.
     $this->drupalGet('admin/structure/menu/manage/main');
@@ -617,10 +612,10 @@ class MenuUiTest extends BrowserTestBase {
     $this->assertResponse(200);
     $this->assertText('The menu link has been saved.');
 
-    $menu_links = \Drupal::entityTypeManager()->getStorage('menu_link_content')->loadByProperties(['title' => $title]);
+    $menu_links = entity_load_multiple_by_properties('menu_link_content', ['title' => $title]);
 
     $menu_link = reset($menu_links);
-    $this->assertInstanceOf(MenuLinkContent::class, $menu_link, 'Menu link was found in database.');
+    $this->assertTrue($menu_link, 'Menu link was found in database.');
     $this->assertMenuLink(['menu_name' => $menu_name, 'children' => [], 'parent' => $parent], $menu_link->getPluginId());
 
     return $menu_link;
@@ -665,7 +660,7 @@ class MenuUiTest extends BrowserTestBase {
         'weight[0][value]' => '0',
       ];
       $this->drupalPostForm("admin/structure/menu/manage/{$this->menu->id()}/add", $edit, t('Save'));
-      $menu_links = \Drupal::entityTypeManager()->getStorage('menu_link_content')->loadByProperties(['title' => $title]);
+      $menu_links = entity_load_multiple_by_properties('menu_link_content', ['title' => $title]);
       $last_link = reset($menu_links);
       $created_links[] = 'tools:' . $last_link->getPluginId();
     }
@@ -1032,7 +1027,8 @@ class MenuUiTest extends BrowserTestBase {
     // Check that the menu overview form can be saved without errors when there
     // are pending revisions.
     $this->drupalPostForm('admin/structure/menu/manage/' . $menu_2->id(), [], 'Save');
-    $this->assertSession()->elementNotExists('xpath', '//div[contains(@class, "messages--error")]');
+    $errors = $this->xpath('//div[contains(@class, "messages--error")]');
+    $this->assertFalse($errors, 'Menu overview form saved without errors.');
   }
 
 }

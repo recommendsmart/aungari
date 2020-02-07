@@ -23,11 +23,6 @@ class SearchMultilingualTest extends ViewTestBase {
   public static $modules = ['node', 'search', 'language', 'content_translation'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Views used by this test.
    *
    * @var array

@@ -19,6 +19,13 @@ class EntityUpdateAddRevisionTranslationAffectedTest extends UpdatePathTestBase 
   use DbUpdatesTrait;
 
   /**
+   * The entity manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityManagerInterface
+   */
+  protected $entityManager;
+
+  /**
    * The state service.
    *
    * @var \Drupal\Core\State\StateInterface
@@ -33,15 +40,11 @@ class EntityUpdateAddRevisionTranslationAffectedTest extends UpdatePathTestBase 
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 
     // Do not use this property after calling ::runUpdates().
+    $this->entityManager = \Drupal::entityManager();
     $this->state = \Drupal::state();
   }
 
@@ -84,7 +87,7 @@ class EntityUpdateAddRevisionTranslationAffectedTest extends UpdatePathTestBase 
     // Check that the correct initial value was set when the field was
     // installed.
     $entity = \Drupal::entityTypeManager()->getStorage('entity_test_update')->load(1);
-    $this->assertNotEmpty($entity->revision_translation_affected->value);
+    $this->assertTrue($entity->revision_translation_affected->value);
   }
 
   /**

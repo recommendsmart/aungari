@@ -1,0 +1,19 @@
+name: 'Drutopia Comment'
+description: 'Provides comments and related configuration.'
+type: module
+# core: 8.x
+dependencies:
+  - comment
+  - config_actions
+  - drutopia_core
+  - field
+  - node
+  - rdf
+  - text
+package: Drutopia
+
+# Information added by Drupal.org packaging script on 2018-10-30
+version: '8.x-1.0-beta1'
+core: '8.x'
+project: 'drutopia_comment'
+datestamp: 1540932184

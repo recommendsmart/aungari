@@ -1,0 +1,10 @@
+field_inheritance.config:
+  type: config_object
+  label: 'Field Inheritance Settings Config'
+  mapping:
+    included_entities:
+      type: string
+      label: 'The included entity types'
+    included_bundles:
+      type: string
+      label: 'The included entity bundles'

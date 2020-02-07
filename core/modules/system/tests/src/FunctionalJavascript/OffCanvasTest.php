@@ -26,11 +26,6 @@ class OffCanvasTest extends OffCanvasTestBase {
   ];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests that non-contextual links will work with the off-canvas dialog.
    *
    * @dataProvider themeDataProvider

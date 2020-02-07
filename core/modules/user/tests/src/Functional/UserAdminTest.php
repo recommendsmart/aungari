@@ -26,11 +26,6 @@ class UserAdminTest extends BrowserTestBase {
   public static $modules = ['taxonomy', 'views'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Registers a user and deletes it.
    */
   public function testUserAdmin() {
@@ -46,7 +41,7 @@ class UserAdminTest extends BrowserTestBase {
     $user_c->name = 'User C';
     $user_c->save();
 
-    $user_storage = $this->container->get('entity_type.manager')->getStorage('user');
+    $user_storage = $this->container->get('entity.manager')->getStorage('user');
 
     // Create admin user to delete registered user.
     $admin_user = $this->drupalCreateUser(['administer users']);
@@ -196,7 +191,7 @@ class UserAdminTest extends BrowserTestBase {
       'from' => $server_address,
       'subject' => $subject,
     ]);
-    $this->assertCount(1, $admin_mail, 'New user mail to admin is sent to configured Notification Email address');
+    $this->assertTrue(count($admin_mail), 'New user mail to admin is sent to configured Notification Email address');
     // Ensure that user notification mail is sent from the configured
     // Notification Email address.
     $user_mail = $this->drupalGetMails([
@@ -205,7 +200,7 @@ class UserAdminTest extends BrowserTestBase {
       'reply-to' => $notify_address,
       'subject' => $subject,
     ]);
-    $this->assertCount(1, $user_mail, 'New user mail to user is sent from configured Notification Email address');
+    $this->assertTrue(count($user_mail), 'New user mail to user is sent from configured Notification Email address');
   }
 
 }

@@ -17,11 +17,6 @@ class CommandsTest extends WebDriverTestBase {
   public static $modules = ['node', 'ajax_test', 'ajax_forms_test'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests the various Ajax Commands.
    */
   public function testAjaxCommands() {

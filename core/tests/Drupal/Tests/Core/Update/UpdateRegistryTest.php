@@ -37,13 +37,13 @@ class UpdateRegistryTest extends UnitTestCase {
     $info_a = <<<'EOS'
 type: module
 name: Module A
-core_version_requirement: '*'
+core: 8.x
 EOS;
 
     $info_b = <<<'EOS'
 type: module
 name: Module B
-core_version_requirement: '*'
+core: 8.x
 EOS;
 
     $module_a = <<<'EOS'

@@ -12,11 +12,6 @@ use Drupal\Tests\BrowserTestBase;
 class ConfigOtherModuleTest extends BrowserTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests enabling the provider of the default configuration first.
    */
   public function testInstallOtherModuleFirst() {
@@ -31,7 +26,7 @@ class ConfigOtherModuleTest extends BrowserTestBase {
     // Install the module that provides the entity type. This installs the
     // default configuration.
     $this->installModule('config_test');
-    $this->assertNotEmpty($this->getStorage()->load('other_module_test'), 'Default configuration has been installed.');
+    $this->assertTrue($this->getStorage()->load('other_module_test'), 'Default configuration has been installed.');
 
     // Uninstall the module that provides the entity type. This will remove the
     // default configuration.
@@ -43,7 +38,7 @@ class ConfigOtherModuleTest extends BrowserTestBase {
     // default configuration.
     $this->installModule('config_test');
     $other_module_config_entity = $this->getStorage()->load('other_module_test');
-    $this->assertNotEmpty($other_module_config_entity, "Default configuration has been recreated.");
+    $this->assertTrue($other_module_config_entity, "Default configuration has been recreated.");
 
     // Update the default configuration to test that the changes are preserved
     // if the module that provides the default configuration is uninstalled.
@@ -52,10 +47,10 @@ class ConfigOtherModuleTest extends BrowserTestBase {
 
     // Uninstall the module that provides the default configuration.
     $this->uninstallModule('config_other_module_config_test');
-    $this->assertNotEmpty($this->getStorage()->load('other_module_test'), 'Default configuration for other modules is not removed when the module that provides it is uninstalled.');
+    $this->assertTrue($this->getStorage()->load('other_module_test'), 'Default configuration for other modules is not removed when the module that provides it is uninstalled.');
 
     // Default configuration provided by config_test should still exist.
-    $this->assertNotEmpty($this->getStorage()->load('dotted.default'), 'The configuration is not deleted.');
+    $this->assertTrue($this->getStorage()->load('dotted.default'), 'The configuration is not deleted.');
 
     // Re-enable module to test that pre-existing optional configuration does
     // not throw an error.
@@ -68,12 +63,12 @@ class ConfigOtherModuleTest extends BrowserTestBase {
     $this->assertNull($this->getStorage()->load('other_module_test_optional_entity_unmet'), 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet whose dependencies are not met is not created.');    $this->installModule('config_test_language');
     $this->assertNull($this->getStorage()->load('other_module_test_optional_entity_unmet'), 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet whose dependencies are met is not created.');
     $this->installModule('config_install_dependency_test');
-    $this->assertNotEmpty($this->getStorage()->load('other_module_test_unmet'), 'The optional configuration config_test.dynamic.other_module_test_unmet whose dependencies are met is now created.');
+    $this->assertTrue($this->getStorage()->load('other_module_test_unmet'), 'The optional configuration config_test.dynamic.other_module_test_unmet whose dependencies are met is now created.');
     // The following configuration entity's dependencies are now met. It is
     // indirectly dependent on the config_install_dependency_test module because
     // it has a dependency on the config_test.dynamic.dependency_for_unmet2
     // configuration provided by that module and, therefore, should be created.
-    $this->assertNotEmpty($this->getStorage()->load('other_module_test_optional_entity_unmet2'), 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet2 whose dependencies are met is now created.');
+    $this->assertTrue($this->getStorage()->load('other_module_test_optional_entity_unmet2'), 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet2 whose dependencies are met is now created.');
 
     // The following configuration entity's dependencies are now met even though
     // it has no direct dependency on the module. It is indirectly dependent on
@@ -82,13 +77,13 @@ class ConfigOtherModuleTest extends BrowserTestBase {
     // dependent on the config_install_dependency_test module and, therefore,
     // should be created.
     $entity = $this->getStorage()->load('other_module_test_optional_entity_unmet');
-    $this->assertNotEmpty($entity, 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet whose dependencies are met is created.');
+    $this->assertTrue($entity, 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet whose dependencies are met is created.');
     $entity->delete();
 
     // Install another module to ensure the configuration just deleted is not
     // recreated.
     $this->installModule('config');
-    $this->assertNull($this->getStorage()->load('other_module_test_optional_entity_unmet'), 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet whose dependencies are met is not installed when an unrelated module is installed.');
+    $this->assertFalse($this->getStorage()->load('other_module_test_optional_entity_unmet'), 'The optional configuration config_test.dynamic.other_module_test_optional_entity_unmet whose dependencies are met is not installed when an unrelated module is installed.');
   }
 
   /**
@@ -96,10 +91,10 @@ class ConfigOtherModuleTest extends BrowserTestBase {
    */
   public function testInstallConfigEntityModuleFirst() {
     $this->installModule('config_test');
-    $this->assertNull($this->getStorage()->load('other_module_test'), 'Default configuration provided by config_other_module_config_test does not exist.');
+    $this->assertFalse($this->getStorage()->load('other_module_test'), 'Default configuration provided by config_other_module_config_test does not exist.');
 
     $this->installModule('config_other_module_config_test');
-    $this->assertNotEmpty($this->getStorage()->load('other_module_test'), 'Default configuration provided by config_other_module_config_test has been installed.');
+    $this->assertTrue($this->getStorage()->load('other_module_test'), 'Default configuration provided by config_other_module_config_test has been installed.');
   }
 
   /**

@@ -12,11 +12,6 @@ use Drupal\Tests\BrowserTestBase;
 class FormatDateTest extends BrowserTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests admin-defined formats in DateFormatterInterface::format().
    */
   public function testAdminDefinedFormatDate() {

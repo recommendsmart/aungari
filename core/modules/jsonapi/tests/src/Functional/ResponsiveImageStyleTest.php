@@ -20,11 +20,6 @@ class ResponsiveImageStyleTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected static $entityTypeId = 'responsive_image_style';
 
   /**

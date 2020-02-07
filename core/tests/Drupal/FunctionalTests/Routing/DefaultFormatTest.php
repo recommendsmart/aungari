@@ -14,11 +14,6 @@ class DefaultFormatTest extends BrowserTestBase {
    */
   public static $modules = ['system', 'default_format_test'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
   public function testFoo() {
     $this->drupalGet('/default_format_test/human');
     $this->assertSame('format:html', $this->getSession()->getPage()->getContent());

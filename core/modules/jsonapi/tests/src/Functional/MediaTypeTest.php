@@ -20,11 +20,6 @@ class MediaTypeTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected static $entityTypeId = 'media_type';
 
   /**

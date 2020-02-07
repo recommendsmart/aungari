@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the social_geolocation module.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_install().
+ */
+function social_geolocation_install() {
+  // Enable permissions.
+  _social_geolocation_set_permissions();
+
+  // By default we enable the Nominatim provider by leaflet be cause it's free.
+  // This is not a dependency because users may want to swap it out.
+  // Configuration is installed automatically from the config/optional dir.
+  \Drupal::service('module_installer')->install(['geolocation_leaflet']);
+}
+
+/**
+ * Set the default unit of measurement to kilometers.
+ */
+function social_geolocation_update_8004(&$sandbox) {
+  // Default unit of measurement - Kilometers.
+  \Drupal::service('config.factory')->getEditable('social_geolocation.settings')
+    ->set('unit_of_measurement', 'km')->save();
+}
+
+/**
+ * Function to set default permissions.
+ */
+function _social_geolocation_set_permissions() {
+  $roles = Role::loadMultiple();
+
+  /** @var \Drupal\user\Entity\Role $role */
+  foreach ($roles as $role) {
+    if ($role->id() === 'administrator') {
+      continue;
+    }
+
+    if ($role->id() === 'sitemanager') {
+      user_role_grant_permissions('sitemanager', ['set social geolocation settings']);
+    }
+  }
+}

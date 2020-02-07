@@ -28,11 +28,6 @@ class MediaUiFunctionalTest extends MediaFunctionalTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
     $this->drupalPlaceBlock('local_actions_block');
@@ -140,7 +135,7 @@ class MediaUiFunctionalTest extends MediaFunctionalTestBase {
     $assert_session->pageTextContains('This action cannot be undone');
     $page->pressButton('Delete');
     $media_id = \Drupal::entityQuery('media')->execute();
-    $this->assertEmpty($media_id);
+    $this->assertFalse($media_id);
   }
 
   /**

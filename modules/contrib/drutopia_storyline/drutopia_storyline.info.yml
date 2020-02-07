@@ -1,0 +1,21 @@
+name: 'Drutopia Storyline'
+description: 'Provides Storyline paragraphs.'
+type: module
+# core: 8.x
+package: Drutopia
+dependencies:
+  - config_actions
+  - drutopia_core
+  - drutopia_page
+  - entity_reference_revisions
+  - field
+  - field_group
+  - node
+  - paragraphs
+  - text
+
+# Information added by Drupal.org packaging script on 2019-05-30
+version: '8.x-1.0-beta3'
+core: '8.x'
+project: 'drutopia_storyline'
+datestamp: 1559239698

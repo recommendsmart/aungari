@@ -20,11 +20,6 @@ class NodeAccessGrantsCacheContextTest extends NodeTestBase {
   public static $modules = ['node_access_test'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * User with permission to view content.
    */
   protected $accessUser;

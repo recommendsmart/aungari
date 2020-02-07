@@ -29,9 +29,4 @@ class LayoutBuilderEntityViewDisplayXmlCookieTest extends LayoutBuilderEntityVie
    */
   protected static $auth = 'cookie';
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
 }

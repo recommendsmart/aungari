@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\comment\Functional;
 
-use Drupal\Component\Render\FormattableMarkup;
 use Drupal\comment\CommentInterface;
 use Drupal\comment\Entity\Comment;
 use Drupal\comment\Entity\CommentType;
@@ -27,11 +26,6 @@ class CommentNonNodeTest extends BrowserTestBase {
   use CommentTestTrait;
 
   public static $modules = ['comment', 'user', 'field_ui', 'entity_test', 'block'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
 
   /**
    * An administrative user with permission to configure comment settings.
@@ -128,8 +122,7 @@ class CommentNonNodeTest extends BrowserTestBase {
     }
 
     // Determine the visibility of subject form field.
-    $display_repository = $this->container->get('entity_display.repository');
-    if ($display_repository->getFormDisplay('comment', 'comment')->getComponent('subject')) {
+    if (entity_get_form_display('comment', 'comment', 'default')->getComponent('subject')) {
       // Subject input allowed.
       $edit['subject[0][value]'] = $subject;
     }
@@ -232,10 +225,10 @@ class CommentNonNodeTest extends BrowserTestBase {
 
     if ($operation == 'delete') {
       $this->drupalPostForm(NULL, [], t('Delete'));
-      $this->assertRaw(\Drupal::translation()->formatPlural(1, 'Deleted 1 comment.', 'Deleted @count comments.'), new FormattableMarkup('Operation "@operation" was performed on comment.', ['@operation' => $operation]));
+      $this->assertRaw(\Drupal::translation()->formatPlural(1, 'Deleted 1 comment.', 'Deleted @count comments.'), format_string('Operation "@operation" was performed on comment.', ['@operation' => $operation]));
     }
     else {
-      $this->assertText(t('The update has been performed.'), new FormattableMarkup('Operation "@operation" was performed on comment.', ['@operation' => $operation]));
+      $this->assertText(t('The update has been performed.'), format_string('Operation "@operation" was performed on comment.', ['@operation' => $operation]));
     }
   }
 
@@ -432,7 +425,7 @@ class CommentNonNodeTest extends BrowserTestBase {
 
     // Check the field contains the correct comment type.
     $field_storage = FieldStorageConfig::load('entity_test.field_barfoo');
-    $this->assertInstanceOf(FieldStorageConfig::class, $field_storage);
+    $this->assertTrue($field_storage);
     $this->assertEqual($field_storage->getSetting('comment_type'), 'foobar');
     $this->assertEqual($field_storage->getCardinality(), 1);
 

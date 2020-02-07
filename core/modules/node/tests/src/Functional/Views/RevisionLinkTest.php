@@ -21,11 +21,6 @@ class RevisionLinkTest extends NodeTestBase {
   public static $testViews = ['test_node_revision_links'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests revision links.
    */
   public function testRevisionLinks() {

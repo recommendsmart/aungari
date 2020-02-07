@@ -1,0 +1,18 @@
+name: 'Social Geolocation'
+description: 'Provides geolocation functionality for groups, events and users'
+type: module
+core: 8.x
+dependencies:
+  - address:address
+  - geolocation:geolocation
+  - geolocation:geolocation_address
+  - geolocation:geolocation_leaflet
+  - social_event
+  - social_group
+  - social_profile
+package: Social
+
+# Information added by Drupal.org packaging script on 2019-12-06
+version: '8.x-1.2'
+project: 'social_geolocation'
+datestamp: 1575643986

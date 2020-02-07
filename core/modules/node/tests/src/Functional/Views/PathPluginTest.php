@@ -19,11 +19,6 @@ class PathPluginTest extends NodeTestBase {
   public static $modules = ['node'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Views used by this test.
    *
    * @var array

@@ -15,11 +15,6 @@ class LanguageBrowserDetectionTest extends BrowserTestBase {
   public static $modules = ['language'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests for adding, editing and deleting mappings between browser language
    * codes and Drupal language codes.
    */

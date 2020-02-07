@@ -38,11 +38,6 @@ class EntityFormDisplayTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUpAuthorization($method) {
     $this->grantPermissionsToTestedRole(['administer node form display']);
   }
@@ -144,7 +139,6 @@ class EntityFormDisplayTest extends ResourceTestBase {
               'weight' => 5,
               'settings' => [
                 'match_operator' => 'CONTAINS',
-                'match_limit' => 10,
                 'size' => 60,
                 'placeholder' => '',
               ],

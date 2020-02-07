@@ -20,11 +20,6 @@ class TaxonomyAttributesTest extends TaxonomyTestBase {
   public static $modules = ['rdf', 'views'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Vocabulary created for testing purposes.
    *
    * @var \Drupal\taxonomy\VocabularyInterface

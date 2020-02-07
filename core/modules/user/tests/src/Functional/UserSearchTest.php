@@ -19,11 +19,6 @@ class UserSearchTest extends BrowserTestBase {
    */
   public static $modules = ['search'];
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
   public function testUserSearch() {
     // Verify that a user without 'administer users' permission cannot search
     // for users by email address. Additionally, ensure that the username has a

@@ -76,9 +76,8 @@ abstract class WebDriverTestBase extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected function installModulesFromClassProperty(ContainerInterface $container) {
-    self::$modules = ['js_deprecation_log_test'];
     if ($this->disableCssAnimations) {
-      self::$modules[] = 'css_disable_transitions_test';
+      self::$modules = ['css_disable_transitions_test'];
     }
     parent::installModulesFromClassProperty($container);
   }
@@ -109,13 +108,6 @@ abstract class WebDriverTestBase extends BrowserTestBase {
         // explaining what the problem is.
         throw new \RuntimeException('Unfinished AJAX requests while tearing down a test');
       }
-
-      $warnings = $this->getSession()->evaluateScript("JSON.parse(sessionStorage.getItem('js_deprecation_log_test.warnings') || JSON.stringify([]))");
-      foreach ($warnings as $warning) {
-        if (strpos($warning, '[Deprecation]') === 0) {
-          @trigger_error('Javascript Deprecation:' . substr($warning, 13), E_USER_DEPRECATED);
-        }
-      }
     }
     parent::tearDown();
   }
@@ -141,7 +133,7 @@ abstract class WebDriverTestBase extends BrowserTestBase {
    * @param string $message
    *   Optional message to show alongside the assertion.
    *
-   * @deprecated in drupal:8.1.0 and is removed from drupal:9.0.0. Use
+   * @deprecated in Drupal 8.1.0, will be removed before Drupal 9.0.0. Use
    *   \Behat\Mink\Element\NodeElement::isVisible() instead.
    */
   protected function assertElementVisible($css_selector, $message = '') {
@@ -157,7 +149,7 @@ abstract class WebDriverTestBase extends BrowserTestBase {
    * @param string $message
    *   Optional message to show alongside the assertion.
    *
-   * @deprecated in drupal:8.1.0 and is removed from drupal:9.0.0. Use
+   * @deprecated in Drupal 8.1.0, will be removed before Drupal 9.0.0. Use
    *   \Behat\Mink\Element\NodeElement::isVisible() instead.
    */
   protected function assertElementNotVisible($css_selector, $message = '') {
@@ -176,7 +168,7 @@ abstract class WebDriverTestBase extends BrowserTestBase {
    *   (optional) A message to display with the assertion. If left blank, a
    *   default message will be displayed.
    *
-   * @throws \PHPUnit\Framework\AssertionFailedError
+   * @throws \PHPUnit_Framework_AssertionFailedError
    *
    * @see \Behat\Mink\Driver\DriverInterface::evaluateScript()
    */

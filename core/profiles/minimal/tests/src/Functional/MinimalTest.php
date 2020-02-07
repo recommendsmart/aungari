@@ -18,11 +18,6 @@ class MinimalTest extends BrowserTestBase {
   protected $profile = 'minimal';
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
-
-  /**
    * Tests Minimal installation profile.
    */
   public function testMinimal() {

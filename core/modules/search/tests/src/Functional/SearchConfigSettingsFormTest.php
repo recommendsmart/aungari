@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\search\Functional;
 
-use Drupal\Component\Render\FormattableMarkup;
-use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\search\Entity\SearchPage;
 use Drupal\Tests\BrowserTestBase;
@@ -19,11 +17,6 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = ['block', 'dblog', 'node', 'search', 'search_extra_type', 'test_page_test'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'classy';
 
   /**
    * User who can search and administer search.
@@ -54,10 +47,11 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     // Link the node to itself to test that it's only indexed once. The content
     // also needs the word "pizza" so we can use it as the search keyword.
     $body_key = 'body[0][value]';
-    $edit[$body_key] = Link::fromTextAndUrl($node->label(), $node->toUrl())->toString() . ' pizza sandwich';
+    $edit[$body_key] = \Drupal::l($node->label(), $node->toUrl()) . ' pizza sandwich';
     $this->drupalPostForm('node/' . $node->id() . '/edit', $edit, t('Save'));
 
     $this->container->get('plugin.manager.search')->createInstance('node_search')->updateIndex();
+    search_update_totals();
 
     // Enable the search block.
     $this->drupalPlaceBlock('search_form_block');
@@ -117,7 +111,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     $this->clickLink(t('Edit'), 1);
 
     // Ensure that the default setting was picked up from the default config
-    $this->assertSession()->elementExists('xpath', '//select[@id="edit-extra-type-settings-boost"]//option[@value="bi" and @selected="selected"]');
+    $this->assertTrue($this->xpath('//select[@id="edit-extra-type-settings-boost"]//option[@value="bi" and @selected="selected"]'), 'Module specific settings are picked up from the default config');
 
     // Change extra type setting and also modify a common search setting.
     $edit = [
@@ -128,7 +122,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
     // Ensure that the modifications took effect.
     $this->assertRaw(t('The %label search page has been updated.', ['%label' => 'Dummy search type']));
     $this->drupalGet('admin/config/search/pages/manage/dummy_search_type');
-    $this->assertSession()->elementExists('xpath', '//select[@id="edit-extra-type-settings-boost"]//option[@value="ii" and @selected="selected"]');
+    $this->assertTrue($this->xpath('//select[@id="edit-extra-type-settings-boost"]//option[@value="ii" and @selected="selected"]'), 'Module specific settings can be changed');
   }
 
   /**
@@ -213,7 +207,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
       $this->drupalGet($item['path'], $item['options']);
       foreach ($plugins as $entity_id) {
         $label = $entities[$entity_id]->label();
-        $this->assertText($label, new FormattableMarkup('%label search tab is shown', ['%label' => $label]));
+        $this->assertText($label, format_string('%label search tab is shown', ['%label' => $label]));
       }
     }
   }
@@ -234,7 +228,7 @@ class SearchConfigSettingsFormTest extends BrowserTestBase {
    */
   public function testMultipleSearchPages() {
     $this->assertDefaultSearch('node_search', 'The default page is set to the installer default.');
-    $search_storage = \Drupal::entityTypeManager()->getStorage('search_page');
+    $search_storage = \Drupal::entityManager()->getStorage('search_page');
     $entities = $search_storage->loadMultiple();
     $search_storage->delete($entities);
     $this->assertDefaultSearch(FALSE);
