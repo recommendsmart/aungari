@@ -97,17 +97,7 @@
             ],
             "export-configuration": "drush config-export --yes"
         },
-        "drupal-scaffold": {
-            "allowed-packages": [
-                "pantheon-systems/drupal-integrations"
-            ],
-            "locations": {
-                "web-root": "./web"
-            },
-            "file-mapping": {
-                "[project-root]/.editorconfig": false
-            }            
-        }
+        
     },
     "config": {
         "optimize-autoloader": true,
