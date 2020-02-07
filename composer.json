@@ -87,8 +87,10 @@
             "profiles/contrib/{$name}": ["type:drupal-profile"],
             "themes/contrib/{$name}": ["type:drupal-theme"],
             "drush/Commands/contrib/{$name}": ["type:drupal-drush"],
-            "private/scripts/quicksilver/{$name}/": ["type:quicksilver-script"]
         },
+		"installer-types": [
+			"library"
+		],		
         "build-env": {
             "install-cms": [
                 "drush site-install standard --account-mail={account-mail} --account-name={account-name} --account-pass={account-pass} --site-mail={site-mail} --site-name={site-name} --yes"
