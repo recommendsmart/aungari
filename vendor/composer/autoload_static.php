@@ -160,6 +160,7 @@ class ComposerStaticInit5d17220e929053982551a874fa36af4c
             'Consolidation\\AnnotatedCommand\\' => 31,
             'Composer\\Semver\\' => 16,
             'Composer\\Installers\\' => 20,
+            'CommerceGuys\\Intl\\' => 18,
             'CommerceGuys\\Addressing\\' => 24,
         ),
         'A' => 
@@ -483,6 +484,10 @@ class ComposerStaticInit5d17220e929053982551a874fa36af4c
         'Composer\\Installers\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
+        ),
+        'CommerceGuys\\Intl\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/commerceguys/intl/src',
         ),
         'CommerceGuys\\Addressing\\' => 
         array (
