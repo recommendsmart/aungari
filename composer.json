@@ -13,7 +13,7 @@
         "drutopia/drutopia": "^1.0-beta2",
         "drush/drush": "^9.0",
         "drupal/commerce": "^2.16",
-        "dompdf/dompdf": "0.8.0"
+        "dompdf/dompdf": "0.8.1"
     },
     "repositories": {
         "drupal": {
