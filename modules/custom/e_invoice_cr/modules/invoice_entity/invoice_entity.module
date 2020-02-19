@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
+use Drupal\provider_entity\Entity\ProviderEntity;
 use Drupal\customer_entity\Entity\CustomerEntity;
 use Drupal\file\Entity\File;
 use Drupal\invoice_entity\Entity\InvoiceEntityInterface;
@@ -129,6 +130,7 @@ function invoice_entity_preprocess_field(&$variables, $hook) {
 function invoice_entity_preprocess_invoice_entity(&$variables, $hook) {
   // Emitter data.
   $emitter = [];
+  $provider = [];
   $customer = [];
   $invoice = [];
   $config = \Drupal::config('e_invoice_cr.settings');
@@ -148,6 +150,27 @@ function invoice_entity_preprocess_invoice_entity(&$variables, $hook) {
   $emitter['address'] = $config->get('address');
   $currency_code = $variables['elements']['#invoice_entity']->get('field_currency')->value;
   $emitter['currency'] = InvoiceEntityInterface::AVAILABLE_CURRENCY[$currency_code]['symbol'];
+  
+  // Providers data.
+  if (isset($variables['elements']['field_providers'][0]['#options']['entity'])) {
+    $entity = $variables['elements']['field_providers'][0]['#options']['entity'];
+    if (!is_null($entity)) {
+      $providers_id = $entity->id();
+      $providers = ProviderEntity::load($provider_id);
+      $providers['id'] = $provider->get('field_provider_id')->value;
+      $providers['id_label'] = $provider->getFieldDefinition('field_provider_id')->label();
+      $providers['name'] = $provider->get('name')->value;
+      $providers['email'] = $provider->get('field_email')->value;
+      $providers['email_label'] = $provider->getFieldDefinition('field_email')->label();
+      $providers['phone'] = $provider->get('field_phone')->value;
+      $providers['phone_label'] = $provider->getFieldDefinition('field_phone')->label();
+      $address = $provider->get('field_address')->getValue();
+      if (count($address) !== 0) {
+        $providers['address'] = $address[0]['province'] . ", " . $address[0]['canton'] . ", " . $address[0]['district'] . ".";
+      }
+      $providers['zipcode'] = $address[0]['zipcode'];
+    }
+  }
   // Client data.
   if (isset($variables['elements']['field_client'][0]['#options']['entity'])) {
     $entity = $variables['elements']['field_client'][0]['#options']['entity'];
@@ -198,6 +221,7 @@ function invoice_entity_preprocess_invoice_entity(&$variables, $hook) {
 
   // Send the data.
   $variables['emitter'] = $emitter;
+  $variables['providers'] = $provider;
   $variables['customer'] = $customer;
   $variables['invoice'] = $invoice;
   $variables['base_path'] = $moduel_path;

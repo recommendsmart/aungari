@@ -187,9 +187,7 @@ class InvoiceEntityController extends ControllerBase implements ContainerInjecti
     $type_of = $entity->get('type_of')->getValue()[0]['value'];
 
     /** @var \Drupal\invoice_entity\InvoiceService $invoice_service */
-    $invoice_service = \Drupal::service('invoice_entity.service');
-    $invoice_service->setConsecutiveNumber($type_of);
-    $result = $invoice_service->validateInvoiceEntity($entity);
+    
 
     // Verify the result of the invoice validation.
     if (is_null($result['response'])) {
@@ -204,7 +202,7 @@ class InvoiceEntityController extends ControllerBase implements ContainerInjecti
       }
       drupal_set_message(t('A validation request has been performed.'), 'status');
     }
-    return new RedirectResponse('/admin/structure/e-invoice-cr/invoice_entity');
+    return new RedirectResponse('/admin/structure/invoice_entity');
   }
 
   /**
@@ -248,7 +246,7 @@ class InvoiceEntityController extends ControllerBase implements ContainerInjecti
     header('Content-disposition: attachment; filename=' . $uri);
     readfile($uri);
     unlink($uri);
-    return new RedirectResponse('/admin/structure/e-invoice-cr/invoice_entity');
+    return new RedirectResponse('/admin/structure/invoice_entity');
   }
 
   /**
@@ -260,10 +258,5 @@ class InvoiceEntityController extends ControllerBase implements ContainerInjecti
    * @return int
    *   A nid of a FileEntity node.
    */
-  private function searchFile($filename) {
-    $query = \Drupal::entityQuery('file')->condition('filename', $filename);
-    $id = $query->execute();
-    return intval(reset($id));
-  }
-
+  
 }
