@@ -7,8 +7,6 @@
  */
 namespace Dompdf;
 
-use Dompdf\Exception;
-use Dompdf\Frame;
 use Dompdf\FrameDecorator\Table as TableFrameDecorator;
 use Dompdf\FrameDecorator\TableCell as TableCellFrameDecorator;
 
@@ -111,14 +109,14 @@ class Cellmap
     private $__row;
 
     /**
-     * Tells wether the columns' width can be modified
+     * Tells whether the columns' width can be modified
      *
      * @var bool
      */
     private $_columns_locked = false;
 
     /**
-     * Tells wether the table has table-layout:fixed
+     * Tells whether the table has table-layout:fixed
      *
      * @var bool
      */
@@ -454,7 +452,6 @@ class Cellmap
         $row["height"] = $height;
         $next_row =& $this->get_row($i + 1);
         $next_row["y"] = $row["y"] + $height;
-
     }
 
     /**

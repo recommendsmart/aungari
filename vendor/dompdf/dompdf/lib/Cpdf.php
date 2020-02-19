@@ -15,6 +15,9 @@
  * @license Public Domain http://creativecommons.org/licenses/publicdomain/
  * @package Cpdf
  */
+
+namespace Dompdf;
+
 use FontLib\Font;
 use FontLib\BinaryStream;
 
@@ -309,12 +312,12 @@ class Cpdf
     /**
      * @var string The target internal encoding
      */
-    static protected $targetEncoding = 'Windows-1252';
+    protected static $targetEncoding = 'Windows-1252';
 
     /**
      * @var array The list of the core fonts
      */
-    static protected $coreFonts = array(
+    protected static $coreFonts = array(
         'courier',
         'courier-bold',
         'courier-oblique',
@@ -464,28 +467,28 @@ class Cpdf
                         // Named with limited valid values
                         case 'NonFullScreenPageMode':
                             if (!in_array($v, array('UseNone', 'UseOutlines', 'UseThumbs', 'UseOC'))) {
-                                continue;
+                                break;
                             }
                             $o['info'][$k] = $v;
                             break;
 
                         case 'Direction':
                             if (!in_array($v, array('L2R', 'R2L'))) {
-                                continue;
+                                break;
                             }
                             $o['info'][$k] = $v;
                             break;
 
                         case 'PrintScaling':
                             if (!in_array($v, array('None', 'AppDefault'))) {
-                                continue;
+                                break;
                             }
                             $o['info'][$k] = $v;
                             break;
 
                         case 'Duplex':
                             if (!in_array($v, array('None', 'AppDefault'))) {
-                                continue;
+                                break;
                             }
                             $o['info'][$k] = $v;
                             break;
@@ -1475,9 +1478,9 @@ EOT;
                     case 'URI':
                         $res .= "\n/S /URI\n/URI (";
                         if ($this->encrypted) {
-                            $res .= $this->filterText($this->ARC4($o['info']), true, false);
+                            $res .= $this->filterText($this->ARC4($o['info']), false, false);
                         } else {
-                            $res .= $this->filterText($o['info'], true, false);
+                            $res .= $this->filterText($o['info'], false, false);
                         }
 
                         $res .= ")";
@@ -1835,10 +1838,10 @@ EOT;
                     }
 
                     switch ($options['channels']) {
-                        case  1:
+                        case 1:
                             $info['ColorSpace'] = '/DeviceGray';
                             break;
-                        case  4:
+                        case 4:
                             $info['ColorSpace'] = '/DeviceCMYK';
                             break;
                         default:
@@ -2311,7 +2314,7 @@ EOT;
         }
 
         if ($this->fileIdentifier === '') {
-            $tmp = implode('',  $this->objects[$this->infoObject]['info']);
+            $tmp = implode('', $this->objects[$this->infoObject]['info']);
             $this->fileIdentifier = md5('DOMPDF' . __FILE__ . $tmp . microtime() . mt_rand());
         }
 
@@ -2517,7 +2520,7 @@ EOT;
                         //C 39 ; WX 222 ; N quoteright ; B 53 463 157 718 ;
                         case 'C': // Found in AFM files
                             $bits = explode(';', trim($row));
-                            $dtmp = array();
+                            $dtmp = array('C' => null, 'N' => null, 'WX' => null, 'B' => array());
 
                             foreach ($bits as $bit) {
                                 $bits2 = explode(' ', trim($bit));
@@ -2542,15 +2545,15 @@ EOT;
                             $width = floatval($dtmp['WX']);
 
                             if ($c >= 0) {
-                                if ($c != hexdec($n)) {
+                                if (!ctype_xdigit($n) || $c != hexdec($n)) {
                                     $data['codeToName'][$c] = $n;
                                 }
                                 $data['C'][$c] = $width;
-                            } else {
+                            } elseif (isset($n)) {
                                 $data['C'][$n] = $width;
                             }
 
-                            if (!isset($data['MissingWidth']) && $c == -1 && $n === '.notdef') {
+                            if (!isset($data['MissingWidth']) && $c === -1 && $n === '.notdef') {
                                 $data['MissingWidth'] = $width;
                             }
 
@@ -2563,7 +2566,7 @@ EOT;
                             }
 
                             $bits = explode(';', trim($row));
-                            $dtmp = array();
+                            $dtmp = array('G' => null, 'N' => null, 'U' => null, 'WX' => null);
 
                             foreach ($bits as $bit) {
                                 $bits2 = explode(' ', trim($bit));
@@ -2595,15 +2598,15 @@ EOT;
                                     $cidtogid[$c * 2 + 1] = chr($glyph & 0xFF);
                                 }
 
-                                if ($c != hexdec($n)) {
+                                if (!ctype_xdigit($n) || $c != hexdec($n)) {
                                     $data['codeToName'][$c] = $n;
                                 }
                                 $data['C'][$c] = $width;
-                            } else {
+                            } elseif (isset($n)) {
                                 $data['C'][$n] = $width;
                             }
 
-                            if (!isset($data['MissingWidth']) && $c == -1 && $n === '.notdef') {
+                            if (!isset($data['MissingWidth']) && $c === -1 && $n === '.notdef') {
                                 $data['MissingWidth'] = $width;
                             }
 
@@ -2835,7 +2838,8 @@ EOT;
 
                         // Write new font
                         $tmp_name = $this->tmp . "/" . basename($fbfile) . ".tmp." . uniqid();
-                        $font_obj->open($tmp_name, BinaryStream::modeWrite);
+                        touch($tmp_name);
+                        $font_obj->open($tmp_name, BinaryStream::modeReadWrite);
                         $font_obj->encode(array("OS/2"));
                         $font_obj->close();
 
@@ -3341,14 +3345,15 @@ EOT;
     {
         $this->addContent(sprintf("\n%.3F %.3F %.3F %.3F %.3F %.3F c", $x1, $y1, $x2, $y2, $x3, $y3));
     }
- 
+
     /**
      * draw a bezier curve based on 4 control points
-     */    function quadTo($cpx, $cpy, $x, $y)
+     */
+    function quadTo($cpx, $cpy, $x, $y)
     {
         $this->addContent(sprintf("\n%.3F %.3F %.3F %.3F v", $cpx, $cpy, $x, $y));
     }
-    
+
     function closePath()
     {
         $this->addContent(' h');
@@ -4072,7 +4077,7 @@ EOT;
                     for ($j = 1; $j < $numbytes; $j++) {
                         $c += ($bytes[$j] << (($numbytes - $j - 1) * 0x06));
                     }
-                    if ((($c >= 0xD800) AND ($c <= 0xDFFF)) OR ($c >= 0x10FFFF)) {
+                    if ((($c >= 0xD800) and ($c <= 0xDFFF)) or ($c >= 0x10FFFF)) {
                         // The definition of UTF-8 prohibits encoding character numbers between
                         // U+D800 and U+DFFF, which are reserved for use with the UTF-16
                         // encoding form (as surrogate pairs) and do not directly represent
@@ -4801,12 +4806,12 @@ EOT;
         imagesavealpha($img, false);
 
         // create temp alpha file
-        $tempfile_alpha = tempnam($this->tmp, "cpdf_img_");
+        $tempfile_alpha = @tempnam($this->tmp, "cpdf_img_");
         @unlink($tempfile_alpha);
         $tempfile_alpha = "$tempfile_alpha.png";
 
         // create temp plain file
-        $tempfile_plain = tempnam($this->tmp, "cpdf_img_");
+        $tempfile_plain = @tempnam($this->tmp, "cpdf_img_");
         @unlink($tempfile_plain);
         $tempfile_plain = "$tempfile_plain.png";
 
@@ -4856,23 +4861,27 @@ EOT;
             // the first version containing it was 3.0.1RC1
             static $imagickClonable = null;
             if ($imagickClonable === null) {
-                $imagickClonable = version_compare(Imagick::IMAGICK_EXTVER, '3.0.1rc1') > 0;
+                $imagickClonable = version_compare(\Imagick::IMAGICK_EXTVER, '3.0.1rc1') > 0;
             }
 
             $imagick = new \Imagick($file);
             $imagick->setFormat('png');
 
             // Get opacity channel (negative of alpha channel)
-            $alpha_channel = $imagickClonable ? clone $imagick : $imagick->clone();
-            $alpha_channel->separateImageChannel(\Imagick::CHANNEL_ALPHA);
-            $alpha_channel->negateImage(true);
-            $alpha_channel->writeImage($tempfile_alpha);
+            if ($imagick->getImageAlphaChannel() !== 0) {
+                $alpha_channel = $imagickClonable ? clone $imagick : $imagick->clone();
+                $alpha_channel->separateImageChannel(\Imagick::CHANNEL_ALPHA);
+                $alpha_channel->negateImage(true);
+                $alpha_channel->writeImage($tempfile_alpha);
 
-            // Cast to 8bit+palette
-            $imgalpha_ = imagecreatefrompng($tempfile_alpha);
-            imagecopy($imgalpha, $imgalpha_, 0, 0, 0, 0, $wpx, $hpx);
-            imagedestroy($imgalpha_);
-            imagepng($imgalpha, $tempfile_alpha);
+                // Cast to 8bit+palette
+                $imgalpha_ = imagecreatefrompng($tempfile_alpha);
+                imagecopy($imgalpha, $imgalpha_, 0, 0, 0, 0, $wpx, $hpx);
+                imagedestroy($imgalpha_);
+                imagepng($imgalpha, $tempfile_alpha);
+            } else {
+                $tempfile_alpha = null;
+            }
 
             // Make opaque image
             $color_channels = new \Imagick();
@@ -4928,15 +4937,19 @@ EOT;
         }
 
         // embed mask image
-        $this->addImagePng($tempfile_alpha, $x, $y, $w, $h, $imgalpha, true);
-        imagedestroy($imgalpha);
+        if ($tempfile_alpha) {
+            $this->addImagePng($tempfile_alpha, $x, $y, $w, $h, $imgalpha, true);
+            imagedestroy($imgalpha);
+        }
 
         // embed image, masked with previously embedded mask
-        $this->addImagePng($tempfile_plain, $x, $y, $w, $h, $imgplain, false, true);
+        $this->addImagePng($tempfile_plain, $x, $y, $w, $h, $imgplain, false, ($tempfile_alpha !== null));
         imagedestroy($imgplain);
 
         // remove temp files
-        unlink($tempfile_alpha);
+        if ($tempfile_alpha) {
+            unlink($tempfile_alpha);
+        }
         unlink($tempfile_plain);
     }
 

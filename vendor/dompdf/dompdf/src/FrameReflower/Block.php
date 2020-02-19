@@ -8,7 +8,6 @@
  */
 namespace Dompdf\FrameReflower;
 
-use Dompdf\FontMetrics;
 use Dompdf\Frame;
 use Dompdf\FrameDecorator\Block as BlockFrameDecorator;
 use Dompdf\FrameDecorator\TableCell as TableCellFrameDecorator;
@@ -605,7 +604,7 @@ class Block extends AbstractFrameReflower
                                 break;
 
                             case "text-top": // FIXME: this should be the height of the frame minus the height of the text
-                                $y_offset = $height - (float)$style->length_in_pt($style->get_line_height(), $style->font_size);
+                                $y_offset = $height - $style->line_height;
                                 break;
 
                             case "top":
