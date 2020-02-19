@@ -7,7 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
+    'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src'),
     'Stack' => array($vendorDir . '/stack/builder/src'),
+    'Sabberworm\\CSS' => array($vendorDir . '/sabberworm/php-css-parser/lib'),
     'EasyRdf_' => array($vendorDir . '/easyrdf/easyrdf/lib'),
     'Dflydev\\DotAccessData' => array($vendorDir . '/dflydev/dot-access-data/src'),
     'Console' => array($vendorDir . '/pear/console_getopt'),
