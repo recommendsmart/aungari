@@ -2,57 +2,59 @@
 
 namespace Drupal\social_auth\AuthManager;
 
+use Drupal\social_api\AuthManager\OAuth2ManagerInterface as BaseOAuth2ManagerInterface;
+
 /**
  * Defines an OAuth2Manager Interface.
  *
  * @package Drupal\social_auth\AuthManager
  */
-interface OAuth2ManagerInterface {
+interface OAuth2ManagerInterface extends BaseOAuth2ManagerInterface {
 
   /**
-   * Sets the service client.
+   * Request data from the declared endpoints.
    *
-   * @param mixed $client
-   *   The service client.
+   * @param string $method
+   *   The HTTP method for the request.
+   * @param string|null $domain
+   *   The domain to request.
    *
-   * @return $this
-   *   The current object.
+   * @return array|null
+   *   The extra details gotten from provider.
    */
-  public function setClient($client);
+  public function getExtraDetails($method = 'GET', $domain = NULL);
 
   /**
-   * Gets the service client object.
+   * Request and end point.
    *
-   * @return mixed
-   *   The service client object.
+   * @param string $method
+   *   The HTTP method for the request.
+   * @param string $path
+   *   The path to request.
+   * @param string|null $domain
+   *   The domain to request.
+   * @param array $options
+   *   Request options.
+   *
+   * @return array|mixed
+   *   Data returned by provider.
    */
-  public function getClient();
+  public function requestEndPoint($method, $path, $domain = NULL, array $options = []);
 
   /**
-   * Authenticates the users by using the access token.
+   * Gets the scopes defined in the settings form.
    *
-   * @return $this
-   *   The current object.
+   * @return string
+   *   Data points separated by comma.
    */
-  public function authenticate();
+  public function getScopes();
 
   /**
-   * Gets the access token after authentication.
+   * Gets the API endpoints to be requested.
    *
-   * @return mixed
-   *   The access token.
+   * @return string
+   *   API endpoints separated in different lines.
    */
-  public function getAccessToken();
-
-  /**
-   * Sets the default access token.
-   *
-   * @param mixed $access_token
-   *   The access token.
-   *
-   * @return $this
-   *   The current object.
-   */
-  public function setAccessToken($access_token);
+  public function getEndPoints();
 
 }
