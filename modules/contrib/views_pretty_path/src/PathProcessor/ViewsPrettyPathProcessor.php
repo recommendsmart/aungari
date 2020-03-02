@@ -117,6 +117,13 @@ class ViewsPrettyPathProcessor implements InBoundPathProcessorInterface, Outboun
    */
   protected $filterSubpath;
 
+  /**
+   * Query parameters
+   *
+   * @var array
+   */
+  protected $queryParameters;
+
   public function __construct(AliasManagerInterface $AliasManager, EntityTypeManagerInterface $EntityTypeManager, Connection $Connection, RequestStack $RequestStack, ConfigFactoryInterface $ConfigFactory) {
     $this->aliasManager = $AliasManager;
     $this->entityTypeManager = $EntityTypeManager;

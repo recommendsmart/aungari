@@ -2,55 +2,80 @@
 
 namespace Drupal\social_auth\AuthManager;
 
+use Drupal\social_api\AuthManager\OAuth2Manager as BaseOAuth2Manager;
+
 /**
  * Defines a basic OAuth2Manager.
  *
  * @package Drupal\social_auth
  */
-abstract class OAuth2Manager implements OAuth2ManagerInterface {
+abstract class OAuth2Manager extends BaseOAuth2Manager implements OAuth2ManagerInterface {
 
   /**
-   * The service client.
+   * The scopes to be requested.
    *
-   * @var mixed
+   * @var string|null
    */
-  protected $client;
+  protected $scopes;
 
   /**
-   * Access token for OAuth2 authentication.
+   * The end points to be requested.
    *
-   * @var mixed
+   * @var string|null
    */
-  protected $accessToken;
+  protected $endPoints;
+
+  /**
+   * The user returned by the provider.
+   *
+   * @var \League\OAuth2\Client\Provider\GenericResourceOwner|array|mixed
+   */
+  protected $user;
 
   /**
    * {@inheritdoc}
    */
-  public function setClient($client) {
-    $this->client = $client;
-    return $this;
+  public function getExtraDetails($method = 'GET', $domain = NULL) {
+    $endpoints = $this->getEndPoints();
+
+    // Stores the data mapped with endpoints define in settings.
+    $data = [];
+
+    if ($endpoints) {
+      // Iterates through endpoints define in settings and retrieves them.
+      foreach (explode(PHP_EOL, $endpoints) as $endpoint) {
+        // Endpoint is set as path/to/endpoint|name.
+        $parts = explode('|', $endpoint);
+
+        $data[$parts[1]] = $this->requestEndPoint($method, $parts[0], $domain);
+      }
+
+      return $data;
+    }
+
+    return NULL;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getClient() {
-    return $this->client;
+  public function getScopes() {
+    if ($this->scopes === NULL) {
+      $this->scopes = $this->settings->get('scopes');
+    }
+
+    return $this->scopes;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getAccessToken() {
-    return $this->accessToken;
-  }
+  public function getEndPoints() {
+    if ($this->endPoints === NULL) {
+      $this->endPoints = $this->settings->get('endpoints');
+    }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setAccessToken($access_token) {
-    $this->accessToken = $access_token;
-    return $this;
+    return $this->endPoints;
   }
 
 }

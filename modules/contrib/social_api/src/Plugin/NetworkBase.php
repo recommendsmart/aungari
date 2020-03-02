@@ -4,7 +4,9 @@ namespace Drupal\social_api\Plugin;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\Core\Site\Settings;
 use Drupal\social_api\Settings\SettingsInterface;
 use Drupal\social_api\SocialApiException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,26 +17,47 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class NetworkBase extends PluginBase implements NetworkInterface {
 
   /**
-   * Stores the settings wrapper object.
+   * The logger factory.
    *
-   * @var SettingsInterface
+   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   */
+  protected $loggerFactory;
+
+  /**
+   * The global site settings.
+   *
+   * @var \Drupal\Core\Site\Settings
+   */
+  protected $siteSettings;
+
+  /**
+   * The implementer/plugin settings.
+   *
+   * @var \Drupal\social_api\Settings\SettingsInterface
    */
   protected $settings;
 
   /**
    * The entity type manager.
    *
-   * @var EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
   /**
+   * The SDK client.
+   *
+   * @var mixed
+   */
+  protected $sdk;
+
+  /**
    * Sets the underlying SDK library.
    *
-   * @return mixed $library_instance
+   * @return mixed
    *   The initialized 3rd party library instance.
    *
-   * @throws SocialApiException
+   * @throws \Drupal\social_api\SocialApiException
    *   If the SDK library does not exist.
    */
   abstract protected function initSdk();
@@ -48,13 +71,27 @@ abstract class NetworkBase extends PluginBase implements NetworkInterface {
    *   The plugin_id for the plugin instance.
    * @param array $plugin_definition
    *   The plugin implementation definition.
-   * @param EntityTypeManagerInterface $entity_type_manager
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory.
+   * @param \Drupal\Core\Site\Settings $settings
+   *   The site settings.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *    The configuration factory object.
+   *   The configuration factory object.
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entity_type_manager, ConfigFactoryInterface $config_factory) {
+  public function __construct(array $configuration,
+                              $plugin_id,
+                              array $plugin_definition,
+                              LoggerChannelFactoryInterface $logger_factory,
+                              Settings $settings,
+                              EntityTypeManagerInterface $entity_type_manager,
+                              ConfigFactoryInterface $config_factory) {
+
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    $this->loggerFactory = $logger_factory;
+    $this->siteSettings = $settings;
     $this->entityTypeManager = $entity_type_manager;
     $this->configuration = $entity_type_manager;
     $this->init($config_factory);
@@ -66,10 +103,10 @@ abstract class NetworkBase extends PluginBase implements NetworkInterface {
    * This method is called upon plugin instantiation. Instantiates the settings
    * wrapper.
    *
-   * @param ConfigFactoryInterface $config_factory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The injected configuration factory.
    *
-   * @throws SocialApiException
+   * @throws \Drupal\social_api\SocialApiException
    *   When the settings are not valid.
    */
   protected function init(ConfigFactoryInterface $config_factory) {
@@ -78,11 +115,13 @@ abstract class NetworkBase extends PluginBase implements NetworkInterface {
       if (!class_exists($definition['handlers']['settings']['class'])) {
         throw new SocialApiException('The specified settings class does not exist. Please check your plugin annotation.');
       }
+
       $config = $config_factory->get($definition['handlers']['settings']['config_id']);
       $settings = call_user_func($definition['handlers']['settings']['class'] . '::factory', $config);
       if (!$settings instanceof SettingsInterface) {
         throw new SocialApiException('The provided settings class does not implement the expected settings interface.');
       }
+
       $this->settings = $settings;
     }
   }
@@ -91,35 +130,27 @@ abstract class NetworkBase extends PluginBase implements NetworkInterface {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    /* @var EntityTypeManagerInterface $entity_type_manager */
-    $entity_type_manager = $container->get('entity_type.manager');
-    /* @var ConfigFactoryInterface $config_factory */
-    $config_factory = $container->get('config.factory');
+
     return new static(
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $entity_type_manager,
-      $config_factory
+      $container->get('logger.factory'),
+      $container->get('settings'),
+      $container->get('entity_type.manager'),
+      $container->get('config.factory')
     );
-  }
 
-  /**
-   * {@inheritdoc}
-   *
-   * By default assume that no action needs to happen to authenticate a request.
-   */
-  public function authenticate() {
-    // Do nothing by default.
   }
 
   /**
    * {@inheritdoc}
    */
   public function getSdk() {
-    if (empty($this->sdk)) {
+    if (!$this->sdk) {
       $this->sdk = $this->initSdk();
     }
+
     return $this->sdk;
   }
 
