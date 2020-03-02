@@ -1,8 +1,7 @@
 <?php
 
-namespace Drupal\commerce_funds\Services;
+namespace Drupal\commerce_funds;
 
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -11,14 +10,13 @@ use Drupal\commerce_payment\PaymentOptionsBuilderInterface;
 use Drupal\commerce_price\Calculator;
 use Drupal\commerce_price\Entity\Currency;
 use Drupal\commerce_order\Entity\Order;
-use Drupal\commerce_funds\FundsDefaultCurrency;
 
 /**
  * Fees Manager class.
  */
-class FeesManager {
+class FeesManager implements FeesManagerInterface {
 
-  use StringTranslationTrait;
+  use \Drupal\Core\StringTranslation\StringTranslationTrait;
 
   /**
    * The config factory.
@@ -44,7 +42,7 @@ class FeesManager {
   /**
    * The product manager service.
    *
-   * @var \Drupal\commerce_funds\Services\ProductManager
+   * @var \Drupal\commerce_funds\ProductManagerInterface
    */
   protected $productManager;
 
@@ -58,7 +56,7 @@ class FeesManager {
   /**
    * Class constructor.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, PaymentOptionsBuilderInterface $payment_options_builder, ProductManager $product_manager, AccountInterface $current_user) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, PaymentOptionsBuilderInterface $payment_options_builder, ProductManagerInterface $product_manager, AccountInterface $current_user) {
     $this->config = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->paymentOptionsBuilder = $payment_options_builder;
@@ -80,13 +78,7 @@ class FeesManager {
   }
 
   /**
-   * Calculate the fee apply to a deposit.
-   *
-   * @param Drupal\commerce_order\Entity\Order $order
-   *   The order object.
-   *
-   * @return int
-   *   Fee applied to the deposit.
+   * {@inheritdoc}
    */
   public function calculateOrderFee(Order $order) {
     $fees = $this->config->get('commerce_funds.settings')->get('fees');
@@ -115,15 +107,7 @@ class FeesManager {
   }
 
   /**
-   * Apply fees to the order.
-   *
-   * Create a fee order item and add it to the order.
-   *
-   * @param Drupal\commerce_order\Entity\Order $order
-   *   The order object.
-   *
-   * @return Drupal\commerce_order\Entity\Order
-   *   The order with the fees applied to it.
+   * {@inheritdoc}
    */
   public function applyFeeToOrder(Order $order) {
     // Calculate the fee and kill the function if no fee.
@@ -140,17 +124,7 @@ class FeesManager {
   }
 
   /**
-   * Details fees applied to a payment gateway.
-   *
-   * @param string $payment_gateway
-   *   The payment gateway id.
-   * @param string $currency_code
-   *   The currency_code.
-   * @param string $type
-   *   The transaction type.
-   *
-   * @return string
-   *   Description of fees applied for the payment gateway.
+   * {@inheritdoc}
    */
   public function printPaymentGatewayFees($payment_gateway, $currency_code, $type) {
     $fees = $this->config->get('commerce_funds.settings')->get('fees');
@@ -165,6 +139,7 @@ class FeesManager {
     // Swap our associative array to a numeric indexed one.
     $fees_keys = array_keys($fees);
     $fees_applied = '';
+
     if (!$fees[$fees_keys[$rate_fee]] && !$fees[$fees_keys[$fixed_fee]]) {
       $fees_applied = $this->t('(No fee)');
     }
@@ -191,19 +166,9 @@ class FeesManager {
   }
 
   /**
-   * Calculate the fee apply to a transaction.
-   *
-   * @param int $brut_amount
-   *   The transaction amount.
-   * @param string $currency_code
-   *   The transaction currency_code.
-   * @param string $type
-   *   The transaction type.
-   *
-   * @return array
-   *   Fee applied to the transaction.
+   * {@inheritdoc}
    */
-  public function calculateTransactionFee($brut_amount, $currency_code, $type) {
+  public function calculateTransactionFee($brut_amount, $currency, $type) {
     $fees = $this->config->get('commerce_funds.settings')->get('fees');
     // No need to go further if no fees are set.
     if (!isset($fees) || !$fees || $this->currentUser->hasPermission('administer transactions')) {
@@ -214,54 +179,43 @@ class FeesManager {
     }
     $fee_rate = array_key_exists($type . '_rate', $fees) ? (string) $fees[$type . '_rate'] : '0';
     $fee_fixed = array_key_exists($type . '_fixed', $fees) ? (string) $fees[$type . '_fixed'] : '0';
-
-    if ($type == 'payment') {
-      $rate = Calculator::divide($fee_rate, '100');
-      $transaction_amount_after_fee_rate = Calculator::round(Calculator::multiply($brut_amount, Calculator::subtract('1', $rate)), 2);
-      $transaction_amount_after_fee_fixed = Calculator::subtract($brut_amount, $fee_fixed);
-      $transaction_amount_after_fees = min([$transaction_amount_after_fee_rate, $transaction_amount_after_fee_fixed]);
-    }
-    else {
-      $rate = Calculator::divide($fee_rate, '100');
-      $transaction_amount_after_fee_rate = Calculator::round(Calculator::multiply((string) $brut_amount, Calculator::add('1', $rate)), 2);
-      $transaction_amount_after_fee_fixed = Calculator::add((string) $brut_amount, $fee_fixed);
-      $transaction_amount_after_fees = max([$transaction_amount_after_fee_rate, $transaction_amount_after_fee_fixed]);
-    }
+    $rate = Calculator::divide($fee_rate, '100');
+    $transaction_amount_after_fee_rate = Calculator::round(Calculator::multiply((string) $brut_amount, Calculator::add('1', $rate)), 2);
+    $transaction_amount_after_fee_fixed = Calculator::add((string) $brut_amount, $fee_fixed);
+    $transaction_amount_after_fees = max([$transaction_amount_after_fee_rate, $transaction_amount_after_fee_fixed]);
 
     $fee = Calculator::subtract($transaction_amount_after_fees, (string) $brut_amount);
 
-    return $fee_applied = [
+    if ($type == 'payment') {
+      $transaction_amount_after_fees = Calculator::subtract((string) $brut_amount, (string) $fee);
+    }
+
+    return [
       'net_amount' => $transaction_amount_after_fees,
       'fee' => $fee,
     ];
   }
 
   /**
-   * Display the fees applied for a transaction type.
-   *
-   * @param string $transaction_type
-   *   Machine name of the transaction type.
-   *
-   * @return string
-   *   Description of fees applied for the transaction.
+   * {@inheritdoc}
    */
   public function printTransactionFees($transaction_type) {
     $fees = $this->config->get('commerce_funds.settings')->get('fees') ?: [];
     $store = $this->entityTypeManager->getStorage('commerce_store')->loadDefault();
-    $funds_default_currency = new FundsDefaultCurrency($store);
+    $funds_default_currency = FundsDefaultCurrency::create(\Drupal::getContainer(), $store);
     $currency = $funds_default_currency->printTransactionCurrency();
 
     $rate_fee = in_array($transaction_type . '_rate', array_keys($fees)) ? $fees[$transaction_type . '_rate'] : 0;
     $fixed_fee = in_array($transaction_type . '_fixed', array_keys($fees)) ? $fees[$transaction_type . '_fixed'] : 0;
 
     if ($rate_fee && !$fixed_fee) {
-      $fees_description = t('An extra commission of @rate_fee% will be applied to your @transaction_type.', [
+      $fees_description = $this->t('An extra commission of @rate_fee% will be applied to your @transaction_type.', [
         '@rate_fee' => $rate_fee,
         '@transaction_type' => $transaction_type,
       ]);
     }
     elseif ($rate_fee && $fixed_fee) {
-      $fees_description = t('An extra commission of @rate_fee% with a minimum of @fixed_fee @currency will be applied to your @transaction_type.', [
+      $fees_description = $this->t('An extra commission of @rate_fee% with a minimum of @fixed_fee @currency will be applied to your @transaction_type.', [
         '@rate_fee' => $rate_fee,
         '@fixed_fee' => $fixed_fee,
         '@transaction_type' => $transaction_type,
@@ -269,14 +223,14 @@ class FeesManager {
       ]);
     }
     elseif (!$rate_fee && $fixed_fee) {
-      $fees_description = t('An extra commission of @fixed_fee @currency will be applied to your @transaction_type.', [
+      $fees_description = $this->t('An extra commission of @fixed_fee @currency will be applied to your @transaction_type.', [
         '@fixed_fee' => $fixed_fee,
         '@transaction_type' => $transaction_type,
         '@currency' => $currency,
       ]);
     }
     else {
-      $fees_description = t('Please enter the amount you want to @transaction_type.', [
+      $fees_description = $this->t('Please enter the amount you want to @transaction_type.', [
         '@transaction_type' => $transaction_type,
       ]);
     }
@@ -285,24 +239,13 @@ class FeesManager {
   }
 
   /**
-   * Convert a currency into another.
-   *
-   * @param int $amount
-   *   The transaction amount.
-   * @param string $currency_left
-   *   The currency to be converted from.
-   * @param string $currency_right
-   *   The currency to convert into.
-   *
-   * @return array
-   *   New amount and fee applied.
+   * {@inheritdoc}
    */
   public function convertCurrencyAmount($amount, $currency_left, $currency_right) {
     $exchange_rates = $this->config->get('commerce_funds.settings')->get('exchange_rates');
     $rate = $exchange_rates[$currency_left . '_' . $currency_right];
 
-    $new_amount = Calculator::multiply($amount, $rate);
-    $fee = Calculator::subtract($new_amount, $amount, 2);
+    $new_amount = Calculator::round(Calculator::multiply($amount, $rate), 2);
     $conversion = [
       'new_amount' => $new_amount,
       'rate' => $rate,
@@ -312,17 +255,7 @@ class FeesManager {
   }
 
   /**
-   * Display the converted amount.
-   *
-   * @param string $amount
-   *   The transaction amount.
-   * @param string $currency_left
-   *   The currency to be converted from.
-   * @param string $currency_right
-   *   The currency to convert into.
-   *
-   * @return string
-   *   New amount value after convertion.
+   * {@inheritdoc}
    */
   public function printConvertedAmount(string $amount, string $currency_left, string $currency_right) {
     if (!$amount || !$currency_left || !$currency_right) {
@@ -333,7 +266,7 @@ class FeesManager {
     $rate = $exchange_rates[$currency_left . '_' . $currency_right];
     $symbol = Currency::load($currency_right)->getSymbol();
 
-    return $symbol . Calculator::multiply($amount, $rate);
+    return $symbol . Calculator::round(Calculator::multiply($amount, $rate), 2);
   }
 
 }

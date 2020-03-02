@@ -71,13 +71,13 @@ class BalanceMethodType extends PaymentMethodTypeBase implements ContainerFactor
     $fields = parent::buildFieldDefinitions();
 
     $fields['balance_id'] = BundleFieldDefinition::create('integer')
-      ->setLabel(t('User balance'))
-      ->setDescription(t('The balance id of the user.'))
+      ->setLabel($this->t('User balance'))
+      ->setDescription($this->t('The balance id of the user.'))
       ->setRequired(TRUE);
 
     $fields['currency'] = BundleFieldDefinition::create('entity_reference')
-      ->setLabel(t('Currency'))
-      ->setDescription(t('The currency of the transaction.'))
+      ->setLabel($this->t('Currency'))
+      ->setDescription($this->t('The currency of the transaction.'))
       ->setSetting('target_type', 'commerce_currency')
       ->setRequired(TRUE);
 

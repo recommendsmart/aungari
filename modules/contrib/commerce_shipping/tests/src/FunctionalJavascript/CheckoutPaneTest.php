@@ -64,6 +64,11 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'classy';
+
+  /**
+   * {@inheritdoc}
+   */
   protected function getAdministratorPermissions() {
     return array_merge([
       'access checkout',
@@ -271,7 +276,7 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
     $second_radio_button = $page->findField('Overnight shipping: $19.99');
     $this->assertNotNull($first_radio_button);
     $this->assertNotNull($second_radio_button);
-    $this->assertTrue($first_radio_button->getAttribute('checked'));
+    $this->assertNotEmpty($first_radio_button->getAttribute('checked'));
 
     $this->submitForm([
       'payment_information[add_payment_method][payment_details][number]' => '4111111111111111',
@@ -340,7 +345,7 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
 
     // Confirm that it is possible to enter a different address.
     $this->getSession()->getPage()->fillField('shipping_information[shipping_profile][select_address]', '_new');
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $address = [
       'given_name' => 'John',
       'family_name' => 'Smith',
@@ -351,12 +356,12 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
     $address_prefix = 'shipping_information[shipping_profile][address][0][address]';
     $page = $this->getSession()->getPage();
     $page->fillField($address_prefix . '[country_code]', 'FR');
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     foreach ($address as $property => $value) {
       $page->fillField($address_prefix . '[' . $property . ']', $value);
     }
     $page->findButton('Recalculate shipping')->click();
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
 
     foreach ([0, 1] as $shipment_index) {
       $label_index = $shipment_index + 1;
@@ -452,7 +457,7 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
     $second_radio_button = $page->findField('Overnight shipping: $19.99');
     $this->assertNotNull($first_radio_button);
     $this->assertNotNull($second_radio_button);
-    $this->assertTrue($first_radio_button->getAttribute('checked'));
+    $this->assertNotEmpty($first_radio_button->getAttribute('checked'));
 
     // Complete the order information step.
     $address = [
@@ -467,7 +472,7 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
     // Confirm that the country list has been restricted.
     $this->assertOptions($address_prefix . '[country_code]', ['US', 'FR', 'DE']);
     $page->fillField($address_prefix . '[country_code]', 'US');
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     foreach ($address as $property => $value) {
       $page->fillField($address_prefix . '[' . $property . ']', $value);
     }
@@ -538,7 +543,7 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
     $this->assertOptions($address_prefix . '[country_code]', ['US', 'FR', 'DE']);
     $page = $this->getSession()->getPage();
     $page->fillField($address_prefix . '[country_code]', 'US');
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     foreach ($address as $property => $value) {
       $page->fillField($address_prefix . '[' . $property . ']', $value);
     }
@@ -547,11 +552,11 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
     // because there was no address known.
     $this->assertSession()->pageTextNotContains('Shipping method');
     $page->findButton('Recalculate shipping')->click();
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->pageTextContains('Shipping method');
     $first_radio_button = $page->findField('Standard shipping: $9.99');
     $this->assertNotNull($first_radio_button);
-    $this->assertTrue($first_radio_button->getAttribute('checked'));
+    $this->assertNotEmpty($first_radio_button->getAttribute('checked'));
 
     $this->submitForm([
       'payment_information[add_payment_method][payment_details][number]' => '4111111111111111',
@@ -656,7 +661,7 @@ class CheckoutPaneTest extends CommerceWebDriverTestBase {
     ];
     $address_prefix = 'shipping_information[shipping_profile][address][0][address]';
     $page->fillField($address_prefix . '[country_code]', 'US');
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     foreach ($address as $property => $value) {
       $page->fillField($address_prefix . '[' . $property . ']', $value);
     }

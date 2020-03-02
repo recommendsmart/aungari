@@ -172,7 +172,6 @@ class BankAccount extends ConfigFormBase {
       '#default_value' => $bank_user_data ? $bank_user_data['bank_province'] : '',
       '#size' => 20,
       '#maxlength' => 128,
-      '#required' => TRUE,
     ];
 
     $form['bank_postalcode'] = [

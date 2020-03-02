@@ -4,8 +4,8 @@ namespace Drupal\commerce_funds\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\commerce_funds\WithdrawalMethodManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\commerce_funds\WithdrawalMethodManager;
 
 /**
  * Form to configure the withdrawals methods allowed.
@@ -22,7 +22,7 @@ class ConfigureWithdrawals extends ConfigFormBase {
   /**
    * Class constructor.
    */
-  public function __construct(WithdrawalMethodManager $withdrawal_manager) {
+  public function __construct(WithdrawalMethodManagerInterface $withdrawal_manager) {
     $this->withdrawalManager = $withdrawal_manager;
   }
 

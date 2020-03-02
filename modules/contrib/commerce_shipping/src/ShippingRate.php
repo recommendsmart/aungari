@@ -8,7 +8,7 @@ use Drupal\Core\Datetime\DrupalDateTime;
 /**
  * Represents a shipping rate.
  */
-class ShippingRate {
+final class ShippingRate {
 
   /**
    * The ID.
@@ -68,12 +68,31 @@ class ShippingRate {
   }
 
   /**
+   * Creates a new shipping rate from the given array.
+   *
+   * @param array $shipping_rate
+   *   The shipping rate array, with the "id", "service" and "amount" keys.
+   *
+   * @return static
+   */
+  public static function fromArray(array $shipping_rate) {
+    if (!isset($shipping_rate['id'], $shipping_rate['service'], $shipping_rate['amount'])) {
+      throw new \InvalidArgumentException('ShippingRate::fromArray() called with a malformed array.');
+    }
+    $shipping_rate += [
+      'delivery_date' => NULL,
+      'delivery_terms' => NULL,
+    ];
+    return new static($shipping_rate['id'], $shipping_rate['service'], $shipping_rate['amount'], $shipping_rate['delivery_date'], $shipping_rate['delivery_terms']);
+  }
+
+  /**
    * Gets the ID.
    *
    * @return string
    *   The ID.
    */
-  public function getId() {
+  public function getId() : string {
     return $this->id;
   }
 
@@ -86,7 +105,7 @@ class ShippingRate {
    * @return \Drupal\commerce_shipping\ShippingService
    *   The shipping service.
    */
-  public function getService() {
+  public function getService() : ShippingService {
     return $this->service;
   }
 
@@ -96,7 +115,7 @@ class ShippingRate {
    * @return \Drupal\commerce_price\Price
    *   The amount.
    */
-  public function getAmount() {
+  public function getAmount() : Price {
     return $this->amount;
   }
 
@@ -121,6 +140,22 @@ class ShippingRate {
    */
   public function getDeliveryTerms() {
     return $this->deliveryTerms;
+  }
+
+  /**
+   * Gets the array representation of the shipping rate.
+   *
+   * @return array
+   *   The array representation of the shipping rate.
+   */
+  public function toArray() : array {
+    return [
+      'id' => $this->id,
+      'service' => $this->service,
+      'amount' => $this->amount,
+      'delivery_date' => $this->deliveryDate,
+      'delivery_terms' => $this->deliveryTerms,
+    ];
   }
 
 }

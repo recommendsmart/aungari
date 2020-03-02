@@ -5,6 +5,7 @@ namespace Drupal\commerce_funds\Plugin\views\field;
 use Drupal\views\ResultRow;
 use Drupal\views\Plugin\views\field\Custom;
 use Drupal\Core\Url;
+use Drupal\commerce_funds\Entity\Transaction;
 
 /**
  * A handler to provide escrow operations for users.
@@ -53,7 +54,7 @@ class EscrowOperations extends Custom {
    *   Renderable dropbutton.
    */
   protected function renderEscrowOperations(ResultRow $values) {
-    $transaction_id = $values->transaction_id;
+    $transaction_hash = Transaction::load($values->transaction_id)->getHash();
     $status = $values->_entity->getStatus();
     $current_display = $this->displayHandler->display['id'];
 
@@ -63,15 +64,15 @@ class EscrowOperations extends Custom {
       if ($status == 'Pending') {
         $args = [
           'action' => 'cancel-escrow',
-          'transaction_id' => $transaction_id,
+          'transaction_hash' => $transaction_hash,
         ];
         $links['cancel'] = [
-          'title' => t('Cancel'),
+          'title' => $this->t('Cancel'),
           'url' => Url::fromRoute('commerce_funds.escrow.cancel', $args),
         ];
       }
       else {
-        return t('None');
+        return $this->t('None');
       }
     }
 
@@ -79,20 +80,20 @@ class EscrowOperations extends Custom {
       if ($status == 'Pending') {
         $args = [
           'action' => 'cancel-escrow',
-          'transaction_id' => $transaction_id,
+          'transaction_hash' => $transaction_hash,
         ];
         $links['cancel'] = [
-          'title' => t('Cancel'),
+          'title' => $this->t('Cancel'),
           'url' => Url::fromRoute('commerce_funds.escrow.cancel', $args),
         ];
         $args['action'] = 'release-escrow';
         $links['release'] = [
-          'title' => t('Release'),
+          'title' => $this->t('Release'),
           'url' => Url::fromRoute('commerce_funds.escrow.release', $args),
         ];
       }
       else {
-        return t('None');
+        return $this->t('None');
       }
     }
 

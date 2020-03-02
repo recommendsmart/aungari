@@ -318,9 +318,9 @@ class ShipmentAdminTest extends CommerceWebDriverTestBase {
     $second_radio_button = $page->findField('Overnight shipping: $19.99');
     $this->assertNotNull($first_radio_button);
     $this->assertNotNull($second_radio_button);
-    $this->assertTrue($first_radio_button->getAttribute('checked'));
+    $this->assertNotEmpty($first_radio_button->getAttribute('checked'));
     $page->findButton('Recalculate shipping')->click();
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->submitForm([], 'Save');
     $this->assertSession()->addressEquals($this->shipmentUri);
     $this->assertSession()->pageTextContains(t('Shipment for order @order created.', ['@order' => $this->order->getOrderNumber()]));
@@ -406,7 +406,7 @@ class ShipmentAdminTest extends CommerceWebDriverTestBase {
       ->setShippingMethod($shipping_method)
       ->setShippingService(key($shipping_services))
       ->save();
-    $this->assertTrue($shipment->getAmount()->compareTo(new Price('9.99', 'USD')));
+    $this->assertEquals(new Price('10', 'USD'), $shipment->getAmount());
 
     // Edit the shipment.
     $this->drupalGet($this->shipmentUri);
@@ -420,11 +420,11 @@ class ShipmentAdminTest extends CommerceWebDriverTestBase {
     $this->assertRenderedAddress($address, 'shipping_profile[0][profile]');
     // Select the default profile instead.
     $this->getSession()->getPage()->fillField('shipping_profile[0][profile][select_address]', $this->defaultProfile->id());
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertRenderedAddress($this->defaultAddress, 'shipping_profile[0][profile]');
     // Edit the default profile and change the street.
     $this->getSession()->getPage()->pressButton('shipping_edit');
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     foreach ($this->defaultAddress as $property => $value) {
       $prefix = 'shipping_profile[0][profile][address][0][address]';
       $this->assertSession()->fieldValueEquals($prefix . '[' . $property . ']', $value);
@@ -437,14 +437,14 @@ class ShipmentAdminTest extends CommerceWebDriverTestBase {
     $package_type = PackageType::load('package_type_a');
     $page->fillField('package_type', 'commerce_package_type:' . $package_type->uuid());
     $page->pressButton('Recalculate shipping');
-    $this->waitForAjaxToFinish();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->submitForm([], 'Save');
 
     // Ensure the shipment has been updated.
     $shipment = $this->reloadEntity($shipment);
     $this->assertEquals('commerce_package_type:' . $package_type->uuid(), $shipment->getPackageType()->getId());
     $this->assertFalse($shipment->getData('owned_by_packer', TRUE));
-    $this->assertSame(0, $shipment->getAmount()->compareTo(new Price('199.80', 'USD')));
+    $this->assertEquals(new Price('199.80', 'USD'), $shipment->getAmount());
 
     $shipping_profile = $this->reloadEntity($shipping_profile);
     $this->assertEquals('customer_shipping', $shipping_profile->bundle());

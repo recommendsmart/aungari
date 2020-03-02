@@ -7,6 +7,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Component\Serialization\Json;
+use Drupal\commerce_price\Calculator;
 use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -130,8 +131,9 @@ class FundsTransferwiseRates extends QueueWorkerBase implements ContainerFactory
     finally {
       if ($response->getStatusCode() == "200") {
         $contents = $response->getBody()->getContents();
+        $rate = (string) Json::decode($contents)[0]['rate'];
 
-        return (string) Json::decode($contents)[0]['rate'];
+        return Calculator::round($rate, 3);
       }
       else {
         return '0';

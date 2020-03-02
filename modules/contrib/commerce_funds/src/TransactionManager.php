@@ -1,8 +1,7 @@
 <?php
 
-namespace Drupal\commerce_funds\Services;
+namespace Drupal\commerce_funds;
 
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Session\AccountInterface;
@@ -12,14 +11,14 @@ use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\commerce_price\Calculator;
 use Drupal\commerce_funds\Entity\Transaction;
 use Drupal\commerce_funds\Entity\TransactionInterface;
-use Drupal\commerce_funds\Exception\TransactionDeniedException;
+use Drupal\commerce_funds\Exception\TransactionException;
 
 /**
  * Transaction manager class.
  */
-class TransactionManager {
+class TransactionManager implements TransactionManagerInterface {
 
-  use StringTranslationTrait;
+  use \Drupal\Core\StringTranslation\StringTranslationTrait;
 
   /**
    * The entity type manager.
@@ -63,10 +62,7 @@ class TransactionManager {
   }
 
   /**
-   * Add deposit amount to user balance.
-   *
-   * @param \Drupal\commerce_order\Entity\OrderInterface $order
-   *   The current order.
+   * {@inheritdoc}
    */
   public function addDepositToBalance(OrderInterface $order) {
     $deposit_amount = $order->getItems()[0]->getTotalPrice()->getNumber();
@@ -87,9 +83,11 @@ class TransactionManager {
       'currency' => $deposit_currency_code,
       'status' => 'Completed',
       'notes' => [
-        'value' => $this->t('Deposit of @amount (@currency)', [
+        'value' => $this->t('Deposit of @amount @currency (order <a href="/user/@user/orders/@order">#@order</a>)', [
           '@amount' => number_format($deposit_amount, 2, '.', ','),
           '@currency' => $deposit_currency_code,
+          '@user' => $order->getCustomerId(),
+          '@order' => $order->id(),
         ]),
         'format' => 'basic_html',
       ],
@@ -100,12 +98,7 @@ class TransactionManager {
   }
 
   /**
-   * Update balances.
-   *
-   * Perfom the transaction operations depending on the type.
-   *
-   * @param \Drupal\commerce_funds\Entity\TransactionInterface $transaction
-   *   The current transaction.
+   * {@inheritdoc}
    */
   public function performTransaction(TransactionInterface $transaction) {
 
@@ -138,18 +131,13 @@ class TransactionManager {
     }
 
     else {
-      throw new TransactionDeniedException("Transaction permission denied: " . $transaction->bundle());
+      throw new TransactionException("Transaction permission denied: " . $transaction->bundle());
     }
 
   }
 
   /**
-   * Add funds from balance.
-   *
-   * @param \Drupal\commerce_funds\Entity\TransactionInterface $transaction
-   *   The current transaction.
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The current user.
+   * {@inheritdoc}
    */
   public function addFundsToBalance(TransactionInterface $transaction, AccountInterface $account) {
     $brut_amount = $transaction->getBrutAmount();
@@ -160,7 +148,7 @@ class TransactionManager {
       $brut_amount = $transaction->getNetAmount();
     }
 
-    // Cover conversions and payments.
+    // Cover conversions.
     if ($transaction->bundle() == "conversion" || $transaction->bundle() == "payment") {
       $brut_amount = $transaction->getNetAmount();
     }
@@ -184,12 +172,7 @@ class TransactionManager {
   }
 
   /**
-   * Remove Funds from balance.
-   *
-   * @param \Drupal\commerce_funds\Entity\TransactionInterface $transaction
-   *   The current transaction.
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The current user.
+   * {@inheritdoc}
    */
   public function removeFundsFromBalance(TransactionInterface $transaction, AccountInterface $account) {
     $net_amount = $transaction->getNetAmount();
@@ -197,6 +180,10 @@ class TransactionManager {
 
     if ($transaction->bundle() == 'conversion') {
       $currency_code = $transaction->getFromCurrencyCode();
+      $net_amount = $transaction->getBrutAmount();
+    }
+
+    if ($transaction->bundle() == 'payment') {
       $net_amount = $transaction->getBrutAmount();
     }
 
@@ -219,10 +206,7 @@ class TransactionManager {
   }
 
   /**
-   * Update site balance.
-   *
-   * @param \Drupal\commerce_funds\Entity\TransactionInterface $transaction
-   *   The current transaction.
+   * {@inheritdoc}
    */
   public function updateSiteBalance(TransactionInterface $transaction) {
     $currency_code = $transaction->getCurrencyCode();
@@ -241,15 +225,7 @@ class TransactionManager {
   }
 
   /**
-   * Load an account balance.
-   *
-   * Load unserialized balance from a user account.
-   *
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   A user account.
-   *
-   * @return array
-   *   The user balance with each currency.
+   * {@inheritdoc}
    */
   public function loadAccountBalance(AccountInterface $account) {
     // Load site balance if user can administer transactions.
@@ -268,12 +244,7 @@ class TransactionManager {
   }
 
   /**
-   * Load global site balance.
-   *
-   * Load unserialized balance from admin user.
-   *
-   * @return array
-   *   The site balance with each currency.
+   * {@inheritdoc}
    */
   public function loadSiteBalance() {
     // Check if issuer balance exists.
@@ -288,13 +259,24 @@ class TransactionManager {
   }
 
   /**
-   * Get the transaction currency.
-   *
-   * @param int $transaction_id
-   *   The transaction id.
-   *
-   * @return Drupal\commerce_price\Entity\Currency
-   *   The transaction currency.
+   * {@inheritdoc}
+   */
+  public function loadTransactionByHash($hash) {
+    // Check if the user is allowed to perform the operation.
+    $transactions = $this->entityTypeManager->getStorage('commerce_funds_transaction')->loadByProperties(['hash' => $hash]);
+    if (count($transactions) > 1) {
+      $duplicate_ids = '';
+      foreach ($transactions as $transaction) {
+        $duplicate_ids .= $transaction->id() . ', ';
+      }
+      throw new TransactionException("Transaction duplicate error: " . $duplicate_ids);
+    }
+
+    return reset($transactions);
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function getTransactionCurrency($transaction_id) {
 
@@ -304,13 +286,7 @@ class TransactionManager {
   }
 
   /**
-   * Get the conversion initial currency.
-   *
-   * @param int $transaction_id
-   *   The transaction id.
-   *
-   * @return Drupal\commerce_price\Entity\Currency
-   *   The source currency of the conversion.
+   * {@inheritdoc}
    */
   public function getConversionFromCurrency($transaction_id) {
 

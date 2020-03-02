@@ -21,11 +21,16 @@ services:
     class: Drupal\commerce_shipping\OrderShipmentSummary
     arguments: ['@entity_type.manager']
 
-  commerce_shipping.shipment_order_processor:
-    class: Drupal\commerce_shipping\ShipmentOrderProcessor
-    arguments: ['@entity_type.manager', '@commerce_shipping.packer_manager']
+  commerce_shipping.early_order_processor:
+    class: Drupal\commerce_shipping\EarlyOrderProcessor
+    arguments: ['@entity_type.manager', '@commerce_shipping.order_manager']
     tags:
       - { name: commerce_order.order_processor, priority: 200 }
+
+  commerce_shipping.late_order_processor:
+    class: Drupal\commerce_shipping\LateOrderProcessor
+    tags:
+      - { name: commerce_order.order_processor, priority: -100 }
 
   commerce_shipping.referenceable_plugin_types_subscriber:
     class: Drupal\commerce_shipping\EventSubscriber\ReferenceablePluginTypesSubscriber
@@ -37,8 +42,17 @@ services:
     tags:
       - { name: event_subscriber }
 
+  commerce_shipping.order_manager:
+    class: Drupal\commerce_shipping\ShippingOrderManager
+    arguments: ['@entity_type.manager', '@entity_type.bundle.info', '@commerce_shipping.packer_manager']
+
   commerce_shipping.profile_subscriber:
     class: Drupal\commerce_shipping\EventSubscriber\ProfileSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  commerce_shipping.cart_subscriber:
+    class: Drupal\commerce_shipping\EventSubscriber\CartSubscriber
     tags:
       - { name: event_subscriber }
 
@@ -46,6 +60,14 @@ services:
     class: Drupal\commerce_shipping\EventSubscriber\RouteSubscriber
     tags:
       - { name: event_subscriber }
+
+  commerce_shipping.shipment_manager:
+    class: Drupal\commerce_shipping\ShipmentManager
+    arguments: ['@entity_type.manager', '@event_dispatcher', '@logger.channel.commerce_shipping']
+
+  logger.channel.commerce_shipping:
+    parent: logger.channel_base
+    arguments: ['commerce_shipping']
 
   plugin.manager.commerce_shipping_method:
     class: Drupal\commerce_shipping\ShippingMethodManager

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_funds\Services;
+namespace Drupal\commerce_funds;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Database\Connection;
@@ -14,7 +14,7 @@ use Drupal\commerce_price\Price;
 /**
  * Product manager class for funds products.
  */
-class ProductManager {
+class ProductManager implements ProductManagerInterface {
 
   /**
    * The entity type manager.
@@ -49,17 +49,7 @@ class ProductManager {
   }
 
   /**
-   * Create product and its variations.
-   *
-   * @param string $type
-   *   The type of the Product (deposit or fees).
-   * @param float $amount
-   *   The amount of the product type.
-   * @param string $currency_code
-   *   The currency code of the product type.
-   *
-   * @return Drupal\commerce_product\Entity\ProductVariation
-   *   The product variation, deposit or fee, of the amount.
+   * {@inheritdoc}
    */
   public function createProduct($type, $amount, $currency_code) {
     $title = ucfirst($type) . ' ' . $amount;
@@ -125,7 +115,7 @@ class ProductManager {
   }
 
   /**
-   * Helper function to create a variation.
+   * Helper function to create a product variation.
    *
    * @param Drupal\commerce_product\Entity\Product $product
    *   A product entity.
@@ -155,13 +145,7 @@ class ProductManager {
   }
 
   /**
-   * Create an order with a product variation.
-   *
-   * @param Drupal\commerce_product\Entity\ProductVariation $product_variation
-   *   The product variation of the amount.
-   *
-   * @return Drupal\commerce_order\Entity\Order
-   *   An order object with the product variation.
+   * {@inheritdoc}
    */
   public function createOrder(ProductVariation $product_variation) {
     $store = $this->entityManager->getStorage('commerce_store')->loadDefault();
@@ -191,15 +175,7 @@ class ProductManager {
   }
 
   /**
-   * Update an existing order with fee product.
-   *
-   * @param Drupal\commerce_order\Entity\Order $order
-   *   The order with a deposit amount product variation.
-   * @param Drupal\commerce_product\Entity\ProductVariation $product_variation
-   *   The deposit amount product variation.
-   *
-   * @return Drupal\commerce_order\Entity\Order
-   *   The order with the fee product variation added.
+   * {@inheritdoc}
    */
   public function updateOrder(Order $order, ProductVariation $product_variation) {
     // Get order items.

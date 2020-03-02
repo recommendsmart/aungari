@@ -5,6 +5,7 @@ namespace Drupal\commerce_funds\Plugin\views\field;
 use Drupal\views\ResultRow;
 use Drupal\views\Plugin\views\field\Custom;
 use Drupal\Core\Url;
+use Drupal\commerce_funds\Entity\Transaction;
 
 /**
  * A handler to provide withdrawal operations for admins.
@@ -53,28 +54,24 @@ class WithdrawalOperations extends Custom {
    *   Renderable dropbutton.
    */
   protected function renderWithdrawalOperations(ResultRow $values) {
-    $request_id = $values->transaction_id;
+    $request_hash = Transaction::load($values->transaction_id)->getHash();
     $status = $values->_entity->getStatus();
     $links = [];
-    $args = ['request_id' => $request_id];
+    $args = ['request_hash' => $request_hash];
 
     if (\Drupal::currentUser()->hasPermission(['administer withdraw requests'])) {
       if ($status == 'Pending') {
         $links['approve'] = [
-          'title' => t('Approve'),
+          'title' => $this->t('Approve'),
           'url' => Url::fromRoute('commerce_funds.admin.withdrawal_requests.approve', $args),
         ];
-        $args = [
-          'action' => 'decline',
-          'request_id' => $request_id,
-        ];
         $links['decline'] = [
-          'title' => t('Decline'),
+          'title' => $this->t('Decline'),
           'url' => Url::fromRoute('commerce_funds.admin.withdrawal_requests.decline', $args),
         ];
       }
       else {
-        return t('None');
+        return $this->t('None');
       }
     }
 

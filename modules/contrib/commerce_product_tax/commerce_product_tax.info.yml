@@ -6,7 +6,7 @@ core: 8.x
 dependencies:
   - commerce:commerce_tax
 
-# Information added by Drupal.org packaging script on 2019-11-06
-version: '8.x-1.0-rc1'
+# Information added by Drupal.org packaging script on 2020-02-26
+version: '8.x-1.0-rc2'
 project: 'commerce_product_tax'
-datestamp: 1573082589
+datestamp: 1582706579

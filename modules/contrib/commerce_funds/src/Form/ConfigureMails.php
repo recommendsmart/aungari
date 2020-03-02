@@ -5,6 +5,8 @@ namespace Drupal\commerce_funds\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
+use Drupal\Core\Extension\ModuleHandler;
+use Drupal\token\TreeBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -20,10 +22,26 @@ class ConfigureMails extends ConfigFormBase {
   protected $messenger;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandler
+   */
+  protected $moduleHandler;
+
+  /**
+   * The token tree builder.
+   *
+   * @var \Drupal\token\TreeBuilderInterface
+   */
+  protected $treeBuilder;
+
+  /**
    * Class constructor.
    */
-  public function __construct(MessengerInterface $messenger) {
+  public function __construct(MessengerInterface $messenger, ModuleHandler $module_handler, TreeBuilderInterface $tree_builder) {
     $this->messenger = $messenger;
+    $this->moduleHandler = $module_handler;
+    $this->treeBuilder = $tree_builder;
   }
 
   /**
@@ -31,7 +49,9 @@ class ConfigureMails extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('module_handler'),
+      $container->get('token.tree_builder')
     );
   }
 
@@ -108,8 +128,8 @@ class ConfigureMails extends ConfigFormBase {
         '#default_value' => $config->get('mail_' . $message_type)['body']['value'],
       ];
 
-      if (\Drupal::service('module_handler')->moduleExists('token')) {
-        $form['mail_' . $message_type . '']['token_available'] = \Drupal::service('token.tree_builder')->buildRenderable(['commerce_funds_transaction', 'commerce_funds_balance']);
+      if ($this->moduleHandler->moduleExists('token')) {
+        $form['mail_' . $message_type . '']['token_available'] = $this->treeBuilder->buildRenderable(['commerce_funds_transaction', 'commerce_funds_balance']);
       }
     }
 

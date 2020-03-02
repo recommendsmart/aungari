@@ -7,6 +7,7 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\commerce_price\Entity\CurrencyInterface;
 use Drupal\user\UserInterface;
+use Drupal\Component\Utility\Crypt;
 
 /**
  * Transaction entity.
@@ -306,6 +307,21 @@ class Transaction extends ContentEntityBase implements TransactionInterface {
   /**
    * {@inheritdoc}
    */
+  public function getHash() {
+    return $this->get('hash')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setHash($hash) {
+    $this->set('hash', $hash);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
 
@@ -369,6 +385,9 @@ class Transaction extends ContentEntityBase implements TransactionInterface {
       ->setDisplayConfigurable('form', FALSE);
 
     $fields['fee'] = BaseFieldDefinition::create('decimal')
+      ->setSettings([
+        'scale' => 3,
+      ])
       ->setLabel(t('Fee'))
       ->setDescription(t('Fee applied to the transaction.'))
       ->setRequired(TRUE)
@@ -412,6 +431,15 @@ class Transaction extends ContentEntityBase implements TransactionInterface {
       ->setDisplayConfigurable('form', FALSE)
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['hash'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Hash'))
+      ->setDescription(t('Unique transaction hash.'))
+      ->setDefaultValueCallback('Drupal\commerce_funds\Entity\Transaction::hashGenerate')
+      ->setRequired(TRUE)
+      ->setDisplayConfigurable('form', FALSE)
+      ->setDisplayConfigurable('view', FALSE)
+      ->setDefaultValue('');
+
     $fields['notes'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Notes'))
       ->setDescription(t('Notes of the issuer of the transaction.'))
@@ -441,6 +469,25 @@ class Transaction extends ContentEntityBase implements TransactionInterface {
    */
   public static function getCurrentUserId() {
     return [\Drupal::currentUser()->id()];
+  }
+
+  /**
+   * Generate a unique URL-safe hash.
+   *
+   * @see ::baseFieldDefinitions()
+   *
+   * @return string
+   *   A unique up to 4 * 12 character identifier.
+   */
+  public static function hashGenerate() {
+
+    $hash = Crypt::randomBytesBase64(12);
+    // Make sure hash is unique.
+    if (\Drupal::entityTypeManager()->getStorage('commerce_funds_transaction')->loadByProperties(['hash' => $hash])) {
+      $hash = self::hashGenerate();
+    }
+
+    return $hash;
   }
 
 }

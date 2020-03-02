@@ -3,6 +3,7 @@
 namespace Drupal\commerce_shipping\Plugin\Field\FieldWidget;
 
 use CommerceGuys\Intl\Formatter\CurrencyFormatterInterface;
+use Drupal\commerce_shipping\ShipmentManagerInterface;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -43,6 +44,13 @@ class ShippingRateWidget extends WidgetBase implements ContainerFactoryPluginInt
   protected $currencyFormatter;
 
   /**
+   * The shipment manager.
+   *
+   * @var \Drupal\commerce_shipping\ShipmentManagerInterface
+   */
+  protected $shipmentManager;
+
+  /**
    * Constructs a new ShippingRateWidget object.
    *
    * @param string $plugin_id
@@ -59,12 +67,15 @@ class ShippingRateWidget extends WidgetBase implements ContainerFactoryPluginInt
    *   The entity type manager.
    * @param \CommerceGuys\Intl\Formatter\CurrencyFormatterInterface $currency_formatter
    *   The currency formatter.
+   * @param \Drupal\commerce_shipping\ShipmentManagerInterface $shipment_manager
+   *   The shipment manager.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager, CurrencyFormatterInterface $currency_formatter) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager, CurrencyFormatterInterface $currency_formatter, ShipmentManagerInterface $shipment_manager) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
 
     $this->entityTypeManager = $entity_type_manager;
     $this->currencyFormatter = $currency_formatter;
+    $this->shipmentManager = $shipment_manager;
   }
 
   /**
@@ -78,7 +89,8 @@ class ShippingRateWidget extends WidgetBase implements ContainerFactoryPluginInt
       $configuration['settings'],
       $configuration['third_party_settings'],
       $container->get('entity_type.manager'),
-      $container->get('commerce_price.currency_formatter')
+      $container->get('commerce_price.currency_formatter'),
+      $container->get('commerce_shipping.shipment_manager')
     );
   }
 
@@ -88,53 +100,28 @@ class ShippingRateWidget extends WidgetBase implements ContainerFactoryPluginInt
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\commerce_shipping\Entity\ShipmentInterface $shipment */
     $shipment = $items[$delta]->getEntity();
-    /** @var \Drupal\commerce_shipping\ShippingMethodStorageInterface $shipping_method_storage */
-    $shipping_method_storage = $this->entityTypeManager->getStorage('commerce_shipping_method');
-    $shipping_methods = $shipping_method_storage->loadMultipleForShipment($shipment);
-    $options = [];
-    foreach ($shipping_methods as $shipping_method) {
-      $shipping_method_plugin = $shipping_method->getPlugin();
-      $shipping_rates = $shipping_method_plugin->calculateRates($shipment);
-      foreach ($shipping_rates as $shipping_rate) {
-        $service = $shipping_rate->getService();
-        $amount = $shipping_rate->getAmount();
-
-        $option_id = $shipping_method->id() . '--' . $service->getId();
-        $option_label = $this->t('@service: @amount', [
-          '@service' => $service->getLabel(),
-          '@amount' => $this->currencyFormatter->format($amount->getNumber(), $amount->getCurrencyCode()),
-        ]);
-        $options[$option_id] = [
-          'id' => $option_id,
-          'label' => $option_label,
-          'shipping_method_id' => $shipping_method->id(),
-          'shipping_rate' => $shipping_rate,
-        ];
-      }
-    }
-
-    if (!empty($shipment->getShippingMethodId()) && array_key_exists($shipment->getShippingMethodId(), $shipping_methods)) {
-      $default_value = $shipment->getShippingMethodId() . '--' . $shipment->getShippingService();
-    }
-    else {
-      $option_ids = array_keys($options);
-      $default_value = reset($option_ids);
-    }
-    if ($default_value) {
-      $element['#type'] = 'radios';
-      $element['#options'] = array_column($options, 'label', 'id');
-      $element['#default_value'] = $default_value;
-      // Store relevant data for extractFormValues().
-      foreach ($options as $option_id => $option) {
-        $element[$option_id]['#shipping_method_id'] = $option['shipping_method_id'];
-        $element[$option_id]['#shipping_rate'] = $option['shipping_rate'];
-      }
-    }
-    else {
+    $rates = $this->shipmentManager->calculateRates($shipment);
+    if (!$rates) {
       $element = [
         '#markup' => $this->t('There are no shipping rates available for this address.'),
       ];
+      return $element;
     }
+
+    $default_rate = $this->shipmentManager->selectDefaultRate($shipment, $rates);
+    $element['#type'] = 'radios';
+    $element['#default_value'] = $default_rate->getId();
+    $element['#options'] = [];
+    foreach ($rates as $rate_id => $rate) {
+      $amount = $rate->getAmount();
+      $element['#options'][$rate_id] = $this->t('@service: @amount', [
+        '@service' => $rate->getService()->getLabel(),
+        '@amount' => $this->currencyFormatter->format($amount->getNumber(), $amount->getCurrencyCode()),
+      ]);
+      // Store the rate object for use in extractFormValues().
+      $element[$rate_id]['#rate'] = $rate;
+    }
+
     return $element;
   }
 
@@ -147,14 +134,11 @@ class ShippingRateWidget extends WidgetBase implements ContainerFactoryPluginInt
     $element = NestedArray::getValue($form, [$field_name, 'widget', 0]);
     $selected_value = NestedArray::getValue($form_state->getValues(), $parents, $key_exists);
     if ($selected_value) {
-      $shipping_method_id = $element[$selected_value]['#shipping_method_id'];
-      /** @var \Drupal\commerce_shipping\ShippingRate $shipping_rate */
-      $shipping_rate = $element[$selected_value]['#shipping_rate'];
+      /** @var \Drupal\commerce_shipping\ShippingRate $rate */
+      $rate = $element[$selected_value]['#rate'];
+      list($shipping_method_id, $shipping_rate_id) = explode('--', $rate->getId());
       /** @var \Drupal\commerce_shipping\Entity\ShipmentInterface $shipment */
       $shipment = $items[0]->getEntity();
-      // @todo This should be done by selectRate() but the plugin doesn't
-      // have access to the parent entity ID yet.
-      $shipment->setShippingMethodId($shipping_method_id);
 
       $shipping_method_storage = $this->entityTypeManager->getStorage('commerce_shipping_method');
       /** @var \Drupal\commerce_shipping\Entity\ShippingMethodInterface $shipping_method */
@@ -163,7 +147,7 @@ class ShippingRateWidget extends WidgetBase implements ContainerFactoryPluginInt
       if (empty($shipment->getPackageType())) {
         $shipment->setPackageType($shipping_method_plugin->getDefaultPackageType());
       }
-      $shipping_method_plugin->selectRate($shipment, $shipping_rate);
+      $shipping_method_plugin->selectRate($shipment, $rate);
 
       // Put delta mapping in $form_state, so that flagErrors() can use it.
       $field_state = static::getWidgetState($form['#parents'], $field_name, $form_state);

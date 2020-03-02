@@ -5,9 +5,9 @@ namespace Drupal\commerce_funds\Plugin\Block;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Config\ConfigFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a block for site balance.
