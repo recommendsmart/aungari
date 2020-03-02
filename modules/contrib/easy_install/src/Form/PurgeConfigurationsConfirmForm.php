@@ -129,7 +129,7 @@ class PurgeConfigurationsConfirmForm extends ConfirmFormBase {
     $this->modules = $this->keyValueExpirable->get($account);
     // Prevent this page from showing when the module list is empty.
     if (empty($this->modules['install'])) {
-      drupal_set_message($this->t('The selected modules could not be Purged, either due to a website problem or due to the uninstall confirmation form timing out. Please try again.'), 'error');
+      $this->messenger()->addError($this->t('The selected modules could not be Purged, either due to a website problem or due to the uninstall confirmation form timing out. Please try again.'));
       return $this->redirect('easy_install.purge_configurations');
     }
 
@@ -247,7 +247,7 @@ class PurgeConfigurationsConfirmForm extends ConfirmFormBase {
     // Delete the keyvalue of current user.
     $this->keyValueExpirable->delete($account);
 
-    drupal_set_message($this->t('The selected configurations have
+    $this->messenger()->addMessage($this->t('The selected configurations have
       been deleted.'));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
