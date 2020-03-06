@@ -4,9 +4,6 @@ namespace Drupal\invoice_entity;
 
 use Drupal\invoice_entity\Entity\InvoiceEntity;
 use Drupal\invoice_entity\Entity\InvoiceEntityInterface;
-use Drupal\invoice_email\InvoiceEmailEvent;
-use Drupal\invoice_received_entity\Entity\InvoiceReceivedEntity;
-use Drupal\invoice_received_entity\Entity\InvoiceReceivedEntityInterface;
 
 /**
  * Class InvoiceService.
@@ -14,43 +11,7 @@ use Drupal\invoice_received_entity\Entity\InvoiceReceivedEntityInterface;
 class InvoiceService implements InvoiceServiceInterface {
 
   protected static $invoiceNumber;
-  protected static $secureCode;
   protected static $consecutiveName;
-
-  /**
-   * Constructs a new InvoiceService object.
-   */
-  public function __construct() {
-    // It gets a random number.
-    self::$secureCode = str_pad(intval(rand(1, 99999999)), 8, '0', STR_PAD_LEFT);
-  }
-
-  /**
-   * Call the validateDocument from Communication and return its result.
-   *
-   * @param string $key
-   *   Key to eval.
-   *
-   * @return array|null|string
-   *   Return the response from the api.
-   */
- 
-
-  /**
-   * Increase the current values by one.
-   */
-  public function increaseValues() {
-    self::$invoiceNumber = str_pad(intval(self::$invoiceNumber) + 1, 10, '0', STR_PAD_LEFT);
-    self::$secureCode = str_pad(intval(rand(1, 99999999)), 8, '0', STR_PAD_LEFT);
-  }
-
-  /**
-   * Decrease the current values by one.
-   */
-  public function decreaseValues() {
-    self::$invoiceNumber = str_pad(intval(self::$invoiceNumber) - 1, 10, '0', STR_PAD_LEFT);
-    self::$secureCode = str_pad(intval(rand(1, 99999999)), 8, '0', STR_PAD_LEFT);
-  }
 
   /**
    * Update the configuration values.
@@ -58,122 +19,7 @@ class InvoiceService implements InvoiceServiceInterface {
   public function updateValues() {
     $this->setInvoiceVariable(self::$consecutiveName, self::$invoiceNumber);
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function checkInvoiceKey($key) {
-    $result = $this->responseForKey($key);
-    if (is_null($result)) {
-      return FALSE;
-    }
-    else {
-      if ($result[2] != 'aceptado') {
-        $messages = explode("\n-", $result[3]->DetalleMensaje);
-        $messages = array_filter($messages, function ($val) {
-          $code = substr($val, 0, 2);
-          return $code == '29' || $code == '99';
-        });
-
-        return !empty($messages);
-      }
-      return TRUE;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  
-  /**
-   * {@inheritdoc}
-   */
-  public function validateInvoiceReceivedEntity(InvoiceReceivedEntity $entity) {
-    $key = $entity->get('document_key')->value;
-    $result = $this->responseForKey($key);
-    $status = $entity->get('field_ir_status')->value;
-    if (!is_null($result)) {
-      $status = $result[2] === 'aceptado' ?
-        InvoiceReceivedEntity::IR_ACCEPTED_STATUS : InvoiceReceivedEntity::IR_REJECTED_STATUS;
-      $entity->set('field_ir_status', $status);
-      $entity->save();
-    }
-    return [
-      'state' => $status,
-      'response' => $result,
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function generateInvoiceKey($type, $received = FALSE) {
-    // Get date information.
-    $day = date("d");
-    $mouth = date("m");
-    $year = date("y");
-    // The id user.
-    $settings = \Drupal::config('e_invoice_cr.settings');
-    $id_user = $settings->get('id');
-    $id_user = str_pad($id_user, 12, '0', STR_PAD_LEFT);
-    if (is_null($id_user)) {
-      return NULL;
-    }
-    else {
-      $consecutive = $received ? $this->generateMessageConsecutive($type) : $this->generateConsecutive($type);
-      // Join the key.
-      $key = '506' . $day . $mouth . $year . $id_user . $consecutive . '1' . self::$secureCode;
-      return $key;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function generateConsecutive($type) {
-    $document_code = isset(InvoiceEntityInterface::DOCUMENTATION_INFO[$type]) ?
-      InvoiceEntityInterface::DOCUMENTATION_INFO[$type]['code'] : '01';
-
-    return $this->generateConsecutiveDoc($document_code);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function generateMessageConsecutive($code) {
-    $document_code = InvoiceReceivedEntityInterface::IR_MESSAGES_STATES[$code]['code'];
-
-    return $this->generateConsecutiveDoc($document_code);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  private function generateConsecutiveDoc($code) {
-    return '00100001' . $code . self::$invoiceNumber;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getUniqueInvoiceKey($type = 'FE', $received = FALSE) {
-    $current_key = $this->generateInvoiceKey($type, $received);
-
-    if ($current_key != NULL) {
-      // Check if the generated key is already use it.
-      if ($this->checkInvoiceKey($current_key)) {
-        // If is already in use. Increase values and try again.
-        $this->increaseValues();
-        return $this->getUniqueInvoiceKey($type);
-      }
-      else {
-        return $current_key;
-      }
-    }
-
-    return $current_key;
-  }
-
+ 
   /**
    * {@inheritdoc}
    */
@@ -189,13 +35,6 @@ class InvoiceService implements InvoiceServiceInterface {
     $config = \Drupal::config('invoice_entity.settings');
     $value = $config->get($variable_name);
     return $value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDocumentNumber() {
-    return self::$invoiceNumber;
   }
 
   /**
@@ -242,35 +81,6 @@ class InvoiceService implements InvoiceServiceInterface {
       self::$invoiceNumber = '0000000001';
       $this->updateValues();
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function checkSettingsData() {
-    $settings = \Drupal::config('e_invoice_cr.settings');
-    $neededFields = [
-      'environment',
-      'username',
-      'password',
-      'id_type',
-      'id',
-      'name',
-      'commercial_name',
-      'phone',
-      'email',
-      'postal_code',
-      'address',
-      'p12_cert',
-      'cert_password',
-    ];
-    foreach ($neededFields as $field) {
-      $value = $settings->get($field);
-      if (is_null($value) || empty($value)) {
-        return FALSE;
-      }
-    }
-    return TRUE;
   }
 
 }
