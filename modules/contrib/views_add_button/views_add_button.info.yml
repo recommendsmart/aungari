@@ -7,7 +7,7 @@ dependencies:
   - drupal:views
   - token:token
 
-# Information added by Drupal.org packaging script on 2019-09-09
-version: '8.x-1.4'
+# Information added by Drupal.org packaging script on 2020-03-11
+version: '8.x-1.6'
 project: 'views_add_button'
-datestamp: 1568009890
+datestamp: 1583899911

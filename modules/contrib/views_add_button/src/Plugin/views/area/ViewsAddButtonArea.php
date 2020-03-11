@@ -2,6 +2,7 @@
 
 namespace Drupal\views_add_button\Plugin\views\area;
 
+use Drupal\Component\Utility\Html;
 use Drupal\views\Plugin\views\area\TokenizeAreaPluginBase;
 use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Form\FormStateInterface;
@@ -124,8 +125,8 @@ class ViewsAddButtonArea extends TokenizeAreaPluginBase {
     $form['render_plugin'] = [
       '#type' => 'select',
       '#title' => t('Custom Rendering Plugin'),
-      '#description' => t('If you would like to specify a plugin to use for rendering, set it here. 
-        Leave unset to use the entity default plugin (recommended).'),
+      '#description' => t('If you would like to specify a plugin to use for generating the URL and creating the 
+        link, set it here. Leave unset to use the entity default plugin (recommended).'),
       '#options' => $this->createPluginList(),
       '#empty_option' => '- Select -',
       '#default_value' => $this->options['render_plugin'],
@@ -342,24 +343,34 @@ class ViewsAddButtonArea extends TokenizeAreaPluginBase {
       else {
         $l = ViewsAddButtonDefault::generateLink($text, $url, $this->options);
       }
-      $l = $l->toRenderable();
+      /* @var $l \Drupal\Core\Link */
+      $ret = ['#type' => 'markup', '#markup' => $l->toString()->getGeneratedLink()];
+
+      /*
+       * Perform bracket and special character replacement.
+       * For security reasons, we are not opening this to most characters.
+       * @see https://www.drupal.org/project/views_add_button/issues/3095849
+       */
+      $replace = ['%5B' => '[', '%5D' => ']'];
+      $ret['#markup'] = strtr($ret['#markup'], $replace);
 
       // Add the prefix and suffix.
       if (isset($this->options['button_prefix']) || isset($this->options['button_suffix'])) {
         if (!empty($this->options['button_prefix']['value'])) {
           $prefix = check_markup($this->options['button_prefix']['value'], $this->options['button_prefix']['format']);
           $prefix = $this->options['tokenize'] ? $this->tokenizeValue($prefix) : $prefix;
-          $l['#prefix'] = $prefix;
+          $ret['#prefix'] = $prefix;
         }
         if (!empty($this->options['button_suffix']['value'])) {
           $suffix = check_markup($this->options['button_suffix']['value'], $this->options['button_suffix']['format']);
           $suffix = $this->options['tokenize'] ? $this->tokenizeValue($suffix) : $suffix;
-          $l['#suffix'] = $suffix;
+          $ret['#suffix'] = $suffix;
         }
-        return $l;
+
+        return $ret;
       }
 
-      return $l;
+      return $ret;
     }
     // Access is denied.
     else {
