@@ -52,7 +52,6 @@ function facture_form_alter(array &$form, FormStateInterface &$form_state, $form
         $prefix = convert_date_in_tags($facture_number_prefix, 'date');
 
 //        Chargement des valeurs dans le formulaire
-//        $form['field_facture_item']['widget'][0]['subform']['field_tva']["widget"][0]['value']['#default_value'] = $facture_tva_default;
         $form['field_devise']["widget"][0]['value']['#default_value'] = $facture_devise_default;
         $form['field_penality_rate']["widget"][0]['value']['#default_value'] = $facture_penality_rate_default;
         $form['field_date_penalite']["widget"][0]['value']['#default_value'] = Drupal\Core\Datetime\DrupalDateTime::createFromTimestamp($facture_limit_date_default);
@@ -123,7 +122,6 @@ function facture_preprocess_node__invoice(&$variables)
 
     $variables['devise'] = $node->field_devise->value;
     $variables['remise_montant'] = $node->field_remise_montant->value;
-    $variables['facture_item'] = $node->field_facture_item;
     $variables['acompte'] = $node->field_acompte->value;
     $variables['montant_total_ht'] = $node->field_montant_total_ht->value;
     $variables['montant_total_tva'] = $node->field_montant_total_tva->value;
@@ -155,17 +153,6 @@ function facture_entity_presave(Drupal\Core\Entity\EntityInterface $entity)
             $montantTotalTtc = '0';
             $montantTotalTva = '0';
             $montantTotalRemise = '0';
-            foreach ($entity->get('field_facture_item')->referencedEntities() as $item) {
-//                dump($item->field_total_item_ht->value);die;
-                $totalItemHt = $item->field_total_item_ht->value;
-                $montantTotalHt += $totalItemHt;
-                $totalItemTtc = $item->field_total_item_ttc->value;
-                $montantTotalTtc += $totalItemTtc;
-                $totalItemTva = $item->field_total_item_tva->value;
-                $montantTotalTva += $totalItemTva;
-                $totalItemRemise = $item->field_total_item_remise->value;
-                $montantTotalRemise += $totalItemRemise;
-            }
 
 
             $acompte = $entity->field_acompte->value;
@@ -192,33 +179,6 @@ function facture_entity_presave(Drupal\Core\Entity\EntityInterface $entity)
     //Calcul et enregistre le total Item HT
     //Calcul et enregistre le total Item TVA
     //Calcul et enregistre le total Item TTC
-    if ($entity->bundle() == 'facture_item') {
-
-        $prixUnitaireHt = $entity->field_prix_unitaire_ht->value;
-        $quantite = $entity->field_quantite->value;
-        $tvaRate = $entity->field_tva->value;
-        $remiseRate = $entity->field_remise->value;
-        $montantRemiseItem = ($prixUnitaireHt * $remiseRate) / 100;
-        $prixUnitaireHt = $prixUnitaireHt - $montantRemiseItem;
-
-
-        if ($remiseRate) {
-            $totalItemRemise = $montantRemiseItem * $quantite;
-        } else {
-            $totalItemRemise = '';
-        }
-//                dump($totalItemRemise);die;
-
-        $totalItemHt = $prixUnitaireHt * $quantite;
-        $totalItemTva = ($totalItemHt * $tvaRate) / 100;
-        $totalItemTtc = $totalItemHt + $totalItemTva;
-
-        // Renvoi des données pour l'enregistrement
-        $entity->field_total_item_remise->value = $totalItemRemise;
-        $entity->field_total_item_ht->value = $totalItemHt;
-        $entity->field_total_item_tva->value = $totalItemTva;
-        $entity->field_total_item_ttc->value = $totalItemTtc;
-    }
 }
 
 
