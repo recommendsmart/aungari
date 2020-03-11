@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.invoice.field_acompte
     - field.field.node.invoice.field_date_penalite
     - field.field.node.invoice.field_devise
-    - field.field.node.invoice.field_facture_item
     - field.field.node.invoice.field_invoice_date
     - field.field.node.invoice.field_invoice_information
     - field.field.node.invoice.field_invoice_netapayer
@@ -37,7 +36,6 @@ hidden:
   field_acompte: true
   field_date_penalite: true
   field_devise: true
-  field_facture_item: true
   field_invoice_date: true
   field_invoice_information: true
   field_invoice_netapayer: true
