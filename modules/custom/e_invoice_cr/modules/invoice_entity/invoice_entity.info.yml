@@ -2,7 +2,7 @@ name: Invoice entity
 type: module
 description: This module provides the invoice entity for e-invoice.
 core: 8.x
-package: other
+package: AGERP
 dependencies:
   - customer_entity
   - provider_entity
