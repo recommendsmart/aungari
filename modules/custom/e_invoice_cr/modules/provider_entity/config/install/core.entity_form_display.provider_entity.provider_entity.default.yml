@@ -6,6 +6,7 @@ dependencies:
     - field.field.provider_entity.provider_entity.field_commercial_name
     - field.field.provider_entity.provider_entity.field_email
     - field.field.provider_entity.provider_entity.field_fax
+    - field.field.provider_entity.provider_entity.field_logo
     - field.field.provider_entity.provider_entity.field_phone
     - field.field.provider_entity.provider_entity.field_provider_foreign_id
     - field.field.provider_entity.provider_entity.field_provider_id
@@ -13,15 +14,15 @@ dependencies:
   module:
     - address
     - field_group
+    - media_library
     - provider_entity
     - telephone
 third_party_settings:
   field_group:
     group_location:
-      children:
-        - field_address
+      children: {  }
       parent_name: ''
-      weight: 8
+      weight: 12
       format_type: fieldset
       format_settings:
         id: ''
@@ -29,19 +30,20 @@ third_party_settings:
         description: ''
         required_fields: true
       label: Location
+      region: hidden
 id: provider_entity.provider_entity.default
 targetEntityType: provider_entity
 bundle: provider_entity
 mode: default
 content:
   field_address:
-    weight: 26
+    weight: 10
     settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content
   field_commercial_name:
-    weight: 4
+    weight: 6
     settings:
       size: 60
       placeholder: ''
@@ -49,7 +51,7 @@ content:
     type: string_textfield
     region: content
   field_email:
-    weight: 7
+    weight: 9
     settings:
       size: 60
       placeholder: ''
@@ -57,21 +59,28 @@ content:
     type: email_default
     region: content
   field_fax:
-    weight: 6
+    weight: 8
     settings:
       placeholder: ''
     third_party_settings: {  }
     type: telephone_default
     region: content
+  field_logo:
+    type: media_library_widget
+    weight: 0
+    settings:
+      media_types: {  }
+    third_party_settings: {  }
+    region: content
   field_phone:
-    weight: 5
+    weight: 7
     settings:
       placeholder: ''
     third_party_settings: {  }
     type: telephone_default
     region: content
   field_provider_foreign_id:
-    weight: 2
+    weight: 3
     settings:
       size: 60
       placeholder: ''
@@ -79,7 +88,7 @@ content:
     type: string_textfield
     region: content
   field_provider_id:
-    weight: 1
+    weight: 2
     settings:
       size: 60
       placeholder: ''
@@ -87,21 +96,21 @@ content:
     type: string_textfield
     region: content
   field_type_id:
-    weight: 0
+    weight: 1
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   langcode:
     type: language_select
-    weight: 2
+    weight: 4
     region: content
     settings:
       include_locked: true
     third_party_settings: {  }
   name:
     type: string_textfield
-    weight: 3
+    weight: 5
     region: content
     settings:
       size: 60
@@ -109,7 +118,7 @@ content:
     third_party_settings: {  }
   user_id:
     type: entity_reference_autocomplete
-    weight: 9
+    weight: 11
     settings:
       match_operator: CONTAINS
       size: 60
