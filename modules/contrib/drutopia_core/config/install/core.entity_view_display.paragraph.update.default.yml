@@ -52,4 +52,5 @@ content:
     third_party_settings: {  }
     type: datetime_default
     region: left
-hidden: {  }
+hidden:
+  search_api_excerpt: true

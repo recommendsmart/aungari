@@ -14,7 +14,6 @@ description: 'Various displays for the campign content type.'
 tag: ''
 base_table: search_api_index_campaign
 base_field: search_api_id
-core: 8.x
 display:
   default:
     display_plugin: default
@@ -168,8 +167,10 @@ display:
       contexts:
         - 'languages:language_interface'
         - url.query_args
+        - 'user.node_grants:view'
         - user.permissions
-      tags: {  }
+      tags:
+        - 'config:search_api.index.campaign'
   block_promoted:
     display_plugin: block
     id: block_promoted
@@ -202,6 +203,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -228,12 +231,15 @@ display:
         options:
           items_per_page: 4
           offset: 0
+      block_hide_empty: true
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_interface'
+        - 'user.node_grants:view'
         - user.permissions
-      tags: {  }
+      tags:
+        - 'config:search_api.index.campaign'
   page_listing:
     display_plugin: page
     id: page_listing
@@ -256,5 +262,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - url.query_args
+        - 'user.node_grants:view'
         - user.permissions
-      tags: {  }
+      tags:
+        - 'config:search_api.index.campaign'

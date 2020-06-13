@@ -11,9 +11,13 @@
         "source": "https://gitlab.com/drutopia/drutopia_site/tree/8.x-1.x"
     },
     "require": {
-        "drupal/config_actions": "^1.0-beta1",
-        "drupal/drutopia_core": "^1.0-alpha1",
-        "drupal/admin_links_access_filter": "^1.0-alpha3",
-        "drupal/admin_toolbar": "^1.19"
+        "drupal/autosave_form": "^1.1",
+        "drupal/admin_toolbar": "^2.2",
+        "drupal/ckeditorheight": "^1.8",
+        "drupal/config_actions": "^1.1",
+        "drupal/drutopia_core": "^1.0",
+        "drupal/role_delegation": "^1.1",
+        "drupal/menu_admin_per_menu": "^1.1",
+        "drupal/wysiwyg_linebreaks": "^1.10"
     }
 }

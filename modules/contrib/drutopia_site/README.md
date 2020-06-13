@@ -15,8 +15,7 @@ Drutopia site is a base feature providing site components.
 
  * drupal/config_actions ^1.0-beta1
  * drupal/drutopia_core ^1.0-alpha1
- * drupal/admin_links_access_filter ^1.0-alpha3
- * drupal/admin_toolbar ^1.19
+ * drupal/admin_toolbar ^1.21
 
 
 ### License

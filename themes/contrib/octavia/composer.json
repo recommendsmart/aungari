@@ -11,7 +11,8 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "drupal/bulma": "^1.0-alpha2",
-        "drupal/skins": "^1.0-alpha4"
+        "drupal/bulma": "^1.0-beta4",
+        "drupal/skins": "^1.0-alpha4",
+        "drupal/twigsuggest": "^1.0-beta1"
     }
 }

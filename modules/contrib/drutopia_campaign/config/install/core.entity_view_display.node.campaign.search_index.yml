@@ -78,3 +78,4 @@ hidden:
   field_meta_tags: true
   field_summary: true
   links: true
+  search_api_excerpt: true

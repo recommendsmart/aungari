@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.resource.field_resource_file
     - field.field.node.resource.field_resource_link
     - field.field.node.resource.field_resource_type
+    - field.field.node.resource.field_resource_video
     - field.field.node.resource.field_summary
     - field.field.node.resource.field_tags
     - field.field.node.resource.field_topics
@@ -114,5 +115,7 @@ content:
 hidden:
   body: true
   field_meta_tags: true
+  field_resource_video: true
   field_summary: true
   links: true
+  search_api_excerpt: true

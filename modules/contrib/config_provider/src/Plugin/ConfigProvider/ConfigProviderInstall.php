@@ -45,8 +45,9 @@ class ConfigProviderInstall extends ConfigProviderBase {
       $data = $profile_storage->readMultiple(array_keys($data)) + $data;
     }
 
-    foreach ($data as $name => $data) {
-      $this->providerStorage->write($name, $data);
+    foreach ($data as $name => $value) {
+      $value = $this->addDefaultConfigHash($value);
+      $this->providerStorage->write($name, $value);
     }
 
     // Get all data from the remaining collections.
@@ -67,11 +68,12 @@ class ConfigProviderInstall extends ConfigProviderBase {
         $data = $profile_storage->readMultiple(array_keys($data)) + $data;
       }
 
-      foreach ($data as $name => $data) {
+      foreach ($data as $name => $value) {
         if ($this->providerStorage->getCollectionName() != $collection) {
           $this->providerStorage = $this->providerStorage->createCollection($collection);
         }
-        $this->providerStorage->write($name, $data);
+        $value = $this->addDefaultConfigHash($value);
+        $this->providerStorage->write($name, $value);
       }
     }
 

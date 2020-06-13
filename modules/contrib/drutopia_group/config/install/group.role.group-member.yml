@@ -11,7 +11,7 @@ audience: member
 group_type: group
 permissions_ui: true
 permissions:
-  - 'update own group_membership content'
   - 'leave group'
+  - 'update own group_membership content'
   - 'view group'
   - 'view group_membership content'

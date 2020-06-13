@@ -86,3 +86,4 @@ hidden:
   field_meta_tags: true
   field_people_type: true
   links: true
+  search_api_excerpt: true

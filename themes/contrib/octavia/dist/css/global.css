@@ -6,8 +6,23 @@
 .has-text-shadow {
   text-shadow: 0.04em 0.04em 0.03em #000; }
 
-.has-margin-top {
+.card-content-bottom {
+  margin-top: auto; }
+
+.has-margin-top, .has-margin-top-1 {
   margin-top: 1em; }
+
+.has-margin-top-2 {
+  margin-top: 2em; }
+
+.has-margin-top-3 {
+  margin-top: 3em; }
+
+.has-margin-top-4 {
+  margin-top: 4em; }
+
+.has-margin-top-5 {
+  margin-top: 5em; }
 
 .column.is-flex-column {
   display: -webkit-box;
@@ -35,3 +50,10 @@
 input[type="checkbox"], input[type="radio"] {
   vertical-align: middle;
   margin-right: 0.333rem; }
+
+.tag.hidden {
+  display: none; }
+
+.comment-indicator {
+  position: absolute;
+  left: -4rem; }

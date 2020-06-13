@@ -1,14 +1,13 @@
 name: 'Drutopia Core'
 description: 'Provides core components required by other features.'
 type: module
-# core: 8.x
+core: 8.x
 dependencies:
   - block_content
   - config_actions
   - config_perms
   - crop
   - datetime
-  - default_content
   - ds
   - entity_reference_revisions
   - faqfield
@@ -31,8 +30,7 @@ dependencies:
   - video_embed_field
 package: Drutopia
 
-# Information added by Drupal.org packaging script on 2019-05-30
-version: '8.x-1.0-beta3'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-06-03
+version: '8.x-1.0'
 project: 'drutopia_core'
-datestamp: 1559250485
+datestamp: 1591214905

@@ -29,6 +29,7 @@ third_party_settings:
       disable_css: false
       entity_classes: all_classes
       settings:
+        label: ''
         wrappers:
           ds_content: div
         outer_wrapper: div
@@ -41,6 +42,7 @@ third_party_settings:
       ds_content:
         - field_image
         - group_card_content
+        - group_card_content_bottom
         - node_post_date
         - node_title
         - field_summary
@@ -66,7 +68,6 @@ third_party_settings:
         - node_post_date
         - node_title
         - field_summary
-        - field_topics
       parent_name: ''
       weight: 1
       format_type: html_element
@@ -80,7 +81,25 @@ third_party_settings:
         effect: none
         speed: fast
       label: 'Card content'
-      region: hidden
+      region: ds_content
+    group_card_content_bottom:
+      children:
+        - field_topics
+      parent_name: ''
+      weight: 2
+      format_type: html_element
+      region: ds_content
+      format_settings:
+        id: ''
+        classes: ''
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+      label: 'Card content bottom'
 id: node.article.card
 targetEntityType: node
 bundle: article
@@ -122,3 +141,4 @@ hidden:
   field_meta_tags: true
   field_tags: true
   links: true
+  search_api_excerpt: true

@@ -1,7 +1,7 @@
 name: 'Drutopia Blog'
 description: 'Provide Blog content type and related configuration. Use <em>blog</em> for personal or journal-like posts.'
 type: module
-# core: 8.x
+core: 8.x
 dependencies:
   - block
   - block_visibility_groups
@@ -33,8 +33,7 @@ dependencies:
   - views
 package: Drutopia
 
-# Information added by Drupal.org packaging script on 2019-05-30
-version: '8.x-1.0-beta3'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-06-03
+version: '8.x-1.0'
 project: 'drutopia_blog'
-datestamp: 1559237891
+datestamp: 1591214770

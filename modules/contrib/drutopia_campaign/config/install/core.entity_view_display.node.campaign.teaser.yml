@@ -78,3 +78,4 @@ hidden:
   field_campaign_updates: true
   field_meta_tags: true
   links: true
+  search_api_excerpt: true

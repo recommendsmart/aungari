@@ -6,7 +6,7 @@
     "homepage": "https://gitlab.com/drutopia/drutopia_social",
     "minimum-stability": "dev",
     "require": {
-        "drupal/social_media_links": "^2.0"
+        "drupal/social_media_links": "^2.6"
     }
 }
 

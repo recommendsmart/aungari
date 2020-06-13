@@ -44,8 +44,11 @@ component-libraries:
       - src/templates
       - src/skins
 
+# This silently breaks things until themes can rely on modules in Drupal 8.9+
+# dependencies:
+#   - twigsuggest
 
-# Information added by Drupal.org packaging script on 2019-10-08
-version: '8.x-1.0-beta5'
+# Information added by Drupal.org packaging script on 2020-06-03
+version: '8.x-1.0'
 project: 'octavia'
-datestamp: 1570576086
+datestamp: 1591215733

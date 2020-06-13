@@ -1,18 +1,6 @@
-{% extends "field.html.twig" %}
+{% extends "@octavia/field/field--node-title.html.twig" %}
 {%
   set view_mode_size_class = {
-    '__default': 'is-size-5',
-	'teaser': 'is-size-3',
-	'card': 'is-size-3',
-	'media': 'is-size-4',
-	'box': 'is-size-5',
+    'card': 'is-3',
   }
 %}
-{% set view_mode = element['#ds_view_mode'] ?? element['#view_mode'] %}
-{%
-set classes = [
-  'title',
-  view_mode_size_class[view_mode] ?? view_mode_size_class['__default'],
-]
-%}
-{% set attributes = attributes.addClass(classes) %}

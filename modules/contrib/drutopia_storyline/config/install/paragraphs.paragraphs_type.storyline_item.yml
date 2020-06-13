@@ -4,5 +4,6 @@ dependencies: {  }
 id: storyline_item
 label: 'Storyline item'
 icon_uuid: null
+icon_default: null
 description: ''
 behavior_plugins: {  }

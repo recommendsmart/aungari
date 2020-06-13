@@ -11,8 +11,8 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "drupal/drutopia_core": "^1.0-beta1",
-        "drupal/drutopia_page": "^1.0-beta2",
-        "drupal/field_group": "^3.0-beta1"
+        "drupal/drutopia_core": "^1.0",
+        "drupal/drutopia_page": "^1.0",
+        "drupal/field_group": "^3.0"
     }
 }

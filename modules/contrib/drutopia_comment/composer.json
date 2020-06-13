@@ -16,6 +16,6 @@
         }
     },
     "require": {
-        "drupal/config_actions": "^1.0-beta1"
+        "drupal/config_actions": "^1.1"
     }
 }

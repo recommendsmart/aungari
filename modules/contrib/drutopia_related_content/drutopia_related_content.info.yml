@@ -1,5 +1,5 @@
 name: 'Drutopia Related Content'
-description: "Shows content (articles, actions, etc.) related to the current page's content based on the taxonomy terms held in common."
+description: 'Shows content (articles, actions, etc.) related to the current node based on the taxonomy terms held in common.'
 type: module
 core: 8.x
 dependencies:
@@ -12,7 +12,7 @@ dependencies:
   - views
 package: Drutopia
 
-# Information added by Drupal.org packaging script on 2019-09-22
-version: '8.x-1.0-beta3'
+# Information added by Drupal.org packaging script on 2020-06-03
+version: '8.x-1.0'
 project: 'drutopia_related_content'
-datestamp: 1569167891
+datestamp: 1591215144

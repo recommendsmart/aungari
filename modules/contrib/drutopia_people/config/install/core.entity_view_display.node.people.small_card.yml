@@ -97,3 +97,4 @@ hidden:
   field_people_type: true
   field_summary: true
   links: true
+  search_api_excerpt: true

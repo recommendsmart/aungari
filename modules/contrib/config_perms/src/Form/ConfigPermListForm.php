@@ -249,7 +249,7 @@ class ConfigPermListForm extends FormBase {
     }
 
     $this->routerBuilder->rebuild();
-    drupal_set_message($this->t('The permissions have been saved.'));
+    $this->messenger()->addMessage($this->t('The permissions have been saved.'));
   }
 
   /**

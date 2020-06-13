@@ -15,17 +15,66 @@
     })
   %}
 {% endif %}
+{#
+  Allow child templates to pass in site slogan attributes.
+#}
+{% if not site_slogan_attributes %}
+  {%
+    set site_slogan_attributes = create_attribute().addClass([
+      'subtitle',
+      'is-2',
+      'is-size-3-tablet-only',
+      'is-size-4-mobile',
+      'has-padding-left-10-touch',
+      'has-padding-right-10-touch',
+    ])
+  %}
+{% endif %}
 {% block navbar %}
 {# Add a new region #}
+{% block header_user %}
 {% if page.header_user %}
-<div class="container">
-  <div class="columns">
-    <div class="column"></div>
-    {{ page.header_user }}
-  </div>
+<div class="container is-flex justify-end">
+  {{ page.header_user }}
 </div>
 {% endif %}
-{{ parent() }}
+{% endblock header_user %}
+{% block navbar_element %}
+{# Top navbar #}
+{% if page.navbar_branding or page.navbar_social or page.primary_menu %}
+{# Top navbar #}
+<nav class="navbar has-shadow">
+  <div class="container">
+    <div class="navbar-brand">
+      {% block navbar_branding %}
+      {% if page.navbar_branding %}
+      {{ page.navbar_branding }}
+      {% endif %}
+      {% endblock navbar_branding %}
+      <div id="js-navbar-burger" class="navbar-burger burger" data-target="navbar-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <div id="js-navbar-menu" class="navbar-menu">
+      {% block navbar_social %}
+      {% if page.navbar_social %}
+      <div class="navbar-start">
+      {{ page.navbar_social }}
+      </div>
+      {% endif %}
+      {% endblock navbar_social %}
+      {% block primary_menu %}
+      {% if page.primary_menu %}
+      {{ page.primary_menu }}
+      {% endif %}
+      {% endblock primary_menu %}
+    </div>
+  </div>
+</nav>
+{% endif %}
+{% endblock navbar_element %}
 {% endblock navbar %}
 {% block header %}
 {% block header_and_search %}
@@ -35,10 +84,10 @@
   <div class="container">
     <div class="columns is-vcentered">
       <div class="column">
-        {{ page.header }}
         {% if is_front and site_slogan %}
-          <h1 class="title">{{ site_slogan }}</h1>
+          <h2{{ site_slogan_attributes }}>{{ site_slogan }}</h1>
         {% endif %}
+        {{ page.header }}
       </div>
       <div class="column is-narrow">
         {{ page.header_search }}

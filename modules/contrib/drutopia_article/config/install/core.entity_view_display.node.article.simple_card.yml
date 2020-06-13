@@ -102,3 +102,4 @@ hidden:
   field_tags: true
   field_topics: true
   links: true
+  search_api_excerpt: true

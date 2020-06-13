@@ -4,5 +4,4 @@ dependencies: {  }
 name: Tags
 vid: tags
 description: 'Use tags to group content if you need categories beyond the given topics.'
-hierarchy: 0
 weight: 0
