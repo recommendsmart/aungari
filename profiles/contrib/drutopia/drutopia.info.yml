@@ -1,0 +1,60 @@
+name: Drutopia
+description: 'Provides an enhanced starting place for site building.'
+type: profile
+core: 8.x
+version: 8.x-1.1
+project: drutopia
+dependencies:
+  - automated_cron
+  - block
+  - block_content
+  - breakpoint
+  - ckeditor
+  - color
+  - comment
+  - components
+  - config
+  - config_actions_provider
+  - config_sync
+  - contact
+  - contextual
+  - datetime
+  - dblog
+  - drutopia_core
+  - drutopia_seo
+  - drutopia_site
+  - dynamic_page_cache
+  - editor
+  - field_ui
+  - file
+  - gdpr
+  - help
+  - history
+  - image
+  - menu_block
+  - menu_link_content
+  - menu_ui
+  - node
+  - options
+  - page_cache
+  - path
+  - quickedit
+  - rdf
+  - shortcut
+  - skins
+  - subprofiles
+  - system
+  - taxonomy
+  - toolbar
+  - tour
+  - twigsuggest
+  - user
+  - views
+  - views_ui
+  - yaml_content
+themes:
+  - octavia
+  - seven
+package: Drutopia
+distribution:
+  name: Drutopia
