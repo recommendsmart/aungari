@@ -7,14 +7,15 @@
     "prefer-stable": true,
     "require": {
         "composer/installers": "^1.0",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
-        "cweagans/composer-patches": "^1.0",
+        "cweagans/composer-patches": "^1.6",
 		"drupal/core": "^8.9",
         "drush/drush": "^9.0",
         "drupal/commerce": "^2.17",
         "dompdf/dompdf": "^0.8.4",
         "drupal/profile": "^1.1",
-        "drutopia/drutopia": "^1.0"
+        "drupal/core-composer-scaffold": "^8.9",
+		"drutopia/drutopia": "^1.1"
+		
     },
     "repositories": {
         "drupal": {

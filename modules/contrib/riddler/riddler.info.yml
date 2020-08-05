@@ -1,0 +1,16 @@
+name: Captcha Riddler
+type: module
+description: 'Provides a question and answer CAPTCHA.'
+package: Spam control
+# version: 8.x
+# core: 8.x
+dependencies:
+  - captcha
+configure: admin/config/people/riddler
+
+
+# Information added by Drupal.org packaging script on 2018-08-18
+version: '8.x-1.1'
+core: '8.x'
+project: 'riddler'
+datestamp: 1534623484

@@ -1,8 +1,0 @@
-services:
-  skins_handler:
-    class: Drupal\skins\SkinHandler
-    arguments:
-      - '@module_handler'
-      - '@theme_handler'
-      - '@event_dispatcher'
-      - '@string_translation'
