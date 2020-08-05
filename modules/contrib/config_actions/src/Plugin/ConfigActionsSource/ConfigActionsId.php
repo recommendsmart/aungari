@@ -179,7 +179,7 @@ class ConfigActionsId extends ConfigActionsSourceBase {
       if ($entity_type = $this->configManager->getEntityTypeIdByName($this->sourceId)) {
         /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $entity_storage */
         $entity_storage = $this->configManager
-          ->getEntityManager()
+          ->getEntityTypeManager()
           ->getStorage($entity_type);
         // It is possible that secondary writes can occur during configuration
         // creation. Updates of such configuration are allowed.

@@ -6,6 +6,7 @@
  */
 
 use Drupal\config_actions\ConfigActionsServiceInterface;
+use Drush\Drush;
 
 /**
  * Implements hook_drush_command().
@@ -48,16 +49,16 @@ function drush_config_actions_list() {
 
   $list = $config_actions->listAll($module_name, $file);
   if (empty($list)) {
-    drush_print(dt('No actions found.'));
+    Drush::output()->writeln('No actions found.');
   }
   else {
     foreach ($list as $module => $files) {
-      drush_print(dt('Module: @name', array('@name' => $module)));
+      Drush::output()->writeln(dt('Module: @name', array('@name' => $module)));
       foreach ($files as $filename => $actions) {
-        drush_print(dt('  File: @file', array('@file' => $filename)));
+        Drush::output()->writeln(dt('  File: @file', array('@file' => $filename)));
         foreach ($actions as $action_id => $action) {
           if (!empty($action_id)) {
-            drush_print(dt('    @action', array('@action' => $action_id)));
+            Drush::output()->writeln(dt('    @action', array('@action' => $action_id)));
           }
         }
       }
@@ -79,15 +80,15 @@ function drush_config_actions_run() {
 
   $result = $config_actions->importAction($module_name, $action_id, $file);
   if (empty($result)) {
-    drush_print(dt('No actions were executed.'));
+    Drush::output()->writeln('No actions were executed.');
   }
   else {
     foreach ($result as $source => $config) {
       if (is_null($config)) {
-        drush_print(dt('  Action: @action - SKIPPED', array('@action' => $source)));
+        Drush::output()->writeln(dt('  Action: @action - SKIPPED', array('@action' => $source)));
       }
       else {
-        drush_print(dt('  Action: @action', array('@action' => $source)));
+        Drush::output()->writeln(dt('  Action: @action', array('@action' => $source)));
       }
     }
   }

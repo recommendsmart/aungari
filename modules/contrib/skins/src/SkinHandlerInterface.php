@@ -21,6 +21,9 @@ interface SkinHandlerInterface {
    *   - libraries-override: (optional) Any libraries
    *   - libraries-extend: (optional) Any libraries
    *   - provider: (optional) The provider name of the skin.
+   *   - provider_type: (optional) The provider type of the skin ('module' or
+   *     'theme').
+   *   - themes: (optional) An array of themes the skin applies to.
    */
   public function getSkins();
 
@@ -37,22 +40,14 @@ interface SkinHandlerInterface {
   public function getThemeSkins($theme_name);
 
   /**
-   * Gets the names of all themes that provide skins.
-   *
-   * @return array
-   *   An array of theme machine names.
-   */
-  public function getSkinThemes();
-
-  /**
-   * Determines whether a theme provides some skins.
+   * Determines whether a theme has some skins.
    *
    * @param string $theme_name
    *   The theme name.
    *
    * @return bool
-   *   Returns TRUE if the theme provides some skins, otherwise FALSE.
+   *   Returns TRUE if the theme has some skins, otherwise FALSE.
    */
-  public function themeProvidesSkins($theme_name);
+  public function themeHasSkins($theme_name);
 
 }

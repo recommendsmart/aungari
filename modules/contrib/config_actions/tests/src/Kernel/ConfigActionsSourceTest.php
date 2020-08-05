@@ -2,9 +2,11 @@
 
 namespace Drupal\Tests\config_actions\Kernel;
 
+use Drupal\Core\File\FileSystem;
 use Drupal\KernelTests\KernelTestBase;
 use org\bovigo\vfs\vfsStream;
 use Drupal\config_actions\Plugin\ConfigActionsSource\ConfigActionsFile;
+use Drupal\Core\Site\Settings;
 
 /**
  * test the ConfigActionsSource plugins
@@ -34,10 +36,30 @@ class ConfigActionsSourceTest extends KernelTestBase {
    */
   protected $sourceManager;
 
+  /**
+   * The File system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * The Logger service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
   public function setUp() {
     parent::setUp();
     $this->installConfig('system');
     $this->sourceManager = $this->container->get('plugin.manager.config_actions_source');
+
+    /* @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $stream_wrapper_manager */
+    $stream_wrapper_manager = $this->createMock('Drupal\\Core\\StreamWrapper\\StreamWrapperManagerInterface');
+    $settings = new Settings([]);
+    $this->logger = $this->createMock('Psr\\Log\\LoggerInterface');
+    $this->fileSystem = new FileSystem($stream_wrapper_manager, $settings, $this->logger);
   }
 
   /**
@@ -129,7 +151,7 @@ class ConfigActionsSourceTest extends KernelTestBase {
     $config_file = 'myactions.yml';
     $filename = $path . '/' . $config_file;
     if (file_exists($filename)) {
-      file_unmanaged_delete($filename);
+      $this->fileSystem->delete($filename);
     }
 
     // Now, write config data to the myactions.yml file

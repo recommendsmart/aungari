@@ -22,7 +22,7 @@ settings:
   display_default: false
 module: image
 locked: false
-cardinality: 1
+cardinality: '@cardinality@'
 translatable: true
 indexes:
   target_id:

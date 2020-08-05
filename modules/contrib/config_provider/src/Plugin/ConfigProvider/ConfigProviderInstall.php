@@ -35,41 +35,29 @@ class ConfigProviderInstall extends ConfigProviderBase {
    */
   public function addInstallableConfig(array $extensions = []) {
     $storage = $this->getExtensionInstallStorage(static::ID);
-    $config_names = $this->listConfig($storage, $extensions);
-    $profile_storages = $this->getProfileStorages();
 
-    $data = $storage->readMultiple($config_names);
-
-    // Check to see if the corresponding override storage has any overrides.
-    foreach ($profile_storages as $profile_storage) {
-      $data = $profile_storage->readMultiple(array_keys($data)) + $data;
-    }
-
-    foreach ($data as $name => $value) {
-      $value = $this->addDefaultConfigHash($value);
-      $this->providerStorage->write($name, $value);
-    }
-
-    // Get all data from the remaining collections.
     // Gather information about all the supported collections.
-    $collection_info = $this->configManager->getConfigCollectionInfo();
+    $collection_info = $this->configManager
+      ->getConfigCollectionInfo();
+    foreach ($collection_info
+      ->getCollectionNames() as $collection) {
+      if ($storage->getCollectionName() !== $collection) {
+        $storage = $storage->createCollection($collection);
+      }
+      $config_names = $this->listConfig($storage, $extensions);
 
-    foreach ($collection_info->getCollectionNames() as $collection) {
-      $collection_storage = $storage->createCollection($collection);
-      $config_names = $this->listConfig($collection_storage, $extensions);
-
-      $data = $collection_storage->readMultiple($config_names);
+      $data = $storage->readMultiple($config_names);
 
       // Check to see if the corresponding override storage has any overrides.
-      foreach ($profile_storages as $profile_storage) {
-        if ($profile_storage->getCollectionName() != $collection) {
+      foreach ($this->getProfileStorages() as $profile_storage) {
+        if ($profile_storage->getCollectionName() !== $collection) {
           $profile_storage = $profile_storage->createCollection($collection);
         }
         $data = $profile_storage->readMultiple(array_keys($data)) + $data;
       }
 
       foreach ($data as $name => $value) {
-        if ($this->providerStorage->getCollectionName() != $collection) {
+        if ($this->providerStorage->getCollectionName() !== $collection) {
           $this->providerStorage = $this->providerStorage->createCollection($collection);
         }
         $value = $this->addDefaultConfigHash($value);

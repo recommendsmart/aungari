@@ -113,7 +113,7 @@ abstract class ConfigProviderBase extends PluginBase implements ConfigProviderIn
    *   The configuration storage that provides the default configuration.
    */
   protected function getExtensionInstallStorage($directory, $collection = StorageInterface::DEFAULT_COLLECTION) {
-    return new ExtensionInstallStorage($this->getActiveStorages($collection), $directory, $collection);
+    return new ExtensionInstallStorage($this->getActiveStorages($collection), $directory, $collection, TRUE, $this->installProfile);
   }
 
   /**

@@ -1,7 +1,7 @@
 name: Config Actions Test
 type: module
 Description: Test module for Config Actions.
-# core: 8.x
+core: 8.x
 package: Test
 dependencies:
   - drupal:node
@@ -9,8 +9,7 @@ dependencies:
   - drupal:file
   - config_actions:config_actions
 
-# Information added by Drupal.org packaging script on 2019-03-19
-version: '8.x-1.1'
-core: '8.x'
+# Information added by Drupal.org packaging script on 2020-06-17
+version: '8.x-1.2'
 project: 'config_actions'
-datestamp: 1553005391
+datestamp: 1592352732

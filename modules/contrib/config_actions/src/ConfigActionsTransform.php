@@ -104,9 +104,23 @@ class ConfigActionsTransform {
   public static function replaceTree($data, $search = '', $replace = '',
                                      $search_keys = '', $replace_keys = '') {
     if (!is_array($data)) {
-      // Regular replace
       if (is_string($data)) {
-        $data = str_replace($search, $replace, $data);
+        // Regular string replace.
+        $matched = FALSE;
+        // First check for exact variable matches.
+        foreach ($search as $search_key => $search_value) {
+          if ($search_value === $data) {
+            // Replace exact match with the exact replacement value.
+            // Fixes issue with integer vs string replacements.
+            $data = $replace[$search_key];
+            $matched = TRUE;
+            break;
+          }
+        }
+        if (!$matched) {
+          // No exact match, so perform generic string replacements.
+          $data = str_replace($search, $replace, $data);
+        }
       }
       return $data;
     }

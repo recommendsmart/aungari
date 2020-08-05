@@ -30,7 +30,7 @@ class ConfigActionsPluginBaseTest extends UnitTestCase {
     parent::setUp();
 
     $container = new ContainerBuilder();
-    $this->configActions = $this->getMock(ConfigActionsServiceInterface::class);
+    $this->configActions = $this->createMock(ConfigActionsServiceInterface::class);
     $container->set('config_actions', $this->configActions);
     \Drupal::setContainer($container);
 

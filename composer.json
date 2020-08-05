@@ -9,7 +9,7 @@
         "composer/installers": "^1.0",
         "drupal-composer/drupal-scaffold": "^2.0.0",
         "cweagans/composer-patches": "^1.0",
-		"drupal/core": "^8.8",
+		"drupal/core": "^8.9",
         "drush/drush": "^9.0",
         "drupal/commerce": "^2.17",
         "dompdf/dompdf": "^0.8.4",

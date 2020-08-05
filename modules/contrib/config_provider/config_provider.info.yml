@@ -7,7 +7,7 @@ package: Config
 dependencies:
  - 'drupal:config'
 
-# Information added by Drupal.org packaging script on 2020-06-04
-version: '8.x-2.0-rc2'
+# Information added by Drupal.org packaging script on 2020-06-23
+version: '8.x-2.0-rc4'
 project: 'config_provider'
-datestamp: 1591297651
+datestamp: 1592923706

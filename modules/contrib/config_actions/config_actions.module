@@ -14,6 +14,10 @@ use Drupal\config_actions\ConfigActionsServiceInterface;
  * @param $modules
  */
 function config_actions_modules_installed($modules) {
+  if (\Drupal::isConfigSyncing()) {
+    // Don't run config actions when enabling module during a config import.
+    return;
+  }
   foreach ($modules as $module_name) {
     $action_dir = DRUPAL_ROOT . '/' . drupal_get_path('module', $module_name) . '/' . ConfigActionsServiceInterface::CONFIG_ACTIONS_CONFIG_DIR;
     if (is_dir($action_dir)) {

@@ -439,6 +439,7 @@ class ConfigActionsPluginTest extends KernelTestBase {
     $dest = 'field.storage.node.@field_name@';
     $replace = [
       '@field_name@' => 'myimage',
+      '@cardinality@' => 2,
     ];
     $action = [
       'source' => $source_file,
@@ -453,6 +454,7 @@ class ConfigActionsPluginTest extends KernelTestBase {
     $new_config = $this->getConfig($config_id);
 
     self::assertEquals($orig_config, $new_config);
+    self::assertTrue(is_int($new_config['cardinality']), 'Cardinality test should set config as integer value');
 
     // Clean up for next test.
     $this->deleteConfig($config_id);
@@ -461,6 +463,7 @@ class ConfigActionsPluginTest extends KernelTestBase {
     $dest = 'field.storage.node.field_name';
     $replace = [
       'field_name' => 'myimage',
+      '@cardinality@' => 1,
     ];
     $action = [
       'source' => $source_file,
@@ -552,6 +555,7 @@ class ConfigActionsPluginTest extends KernelTestBase {
     // First, just call the field_storage action to test a simple include.
     $replace = [
       '@field_name@' => 'myimage',
+      '@cardinality@' => 1,
     ];
     $action = [
       'plugin' => 'include',
@@ -569,6 +573,7 @@ class ConfigActionsPluginTest extends KernelTestBase {
     $new_config = $this->getConfig('field.storage.node.myimage');
 
     self::assertEquals($orig_config, $new_config);
+    self::assertTrue(is_int($new_config['cardinality']), 'Cardinality test should set config as integer value');
 
     // Next, call the field_instance action which has two sub-actions that have
     // their own bundles defined.

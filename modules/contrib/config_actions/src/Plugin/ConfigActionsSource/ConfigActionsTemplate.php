@@ -47,9 +47,12 @@ class ConfigActionsTemplate extends ConfigActionsSourceBase {
    * @param FileSystem $file_system
    *   The FileSystem from the container.
    * @param \Drupal\Core\Config\StorageInterface $config_storage
+   *   The active configuration storage.
+   * @param string $profile
+   *   The current installation profile.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigActionsServiceInterface $config_action_service, StorageInterface $config_storage) {
-    $this->templateStorage = new ExtensionInstallStorage($config_storage, ConfigActionsFile::CONFIG_TEMPLATE_DIRECTORY);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigActionsServiceInterface $config_action_service, StorageInterface $config_storage, $profile) {
+    $this->templateStorage = new ExtensionInstallStorage($config_storage, ConfigActionsFile::CONFIG_TEMPLATE_DIRECTORY, ExtensionInstallStorage::DEFAULT_COLLECTION, TRUE, $profile);
     parent::__construct($configuration, $plugin_id, $plugin_definition, $config_action_service);
   }
 
@@ -72,7 +75,8 @@ class ConfigActionsTemplate extends ConfigActionsSourceBase {
       $plugin_id,
       $plugin_definition,
       $config_action_service,
-      $config_storage
+      $config_storage,
+      $container->getParameter('install_profile')
     );
   }
 
